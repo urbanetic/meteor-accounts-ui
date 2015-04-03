@@ -2,7 +2,7 @@ Package.describe({
   name: 'urbanetic:accounts-ui',
   summary: 'Simple UI for Meteor Accounts',
   git: 'https://github.com/urbanetic/meteor-accounts-ui.git',
-  version: '0.1.1'
+  version: '0.1.2'
 });
 
 Package.on_use(function(api) {
@@ -14,6 +14,7 @@ Package.on_use(function(api) {
     'accounts-password',
     'accounts-ui',
     'aramk:utility@0.4.2',
+    'aramk:q@1.0.1_1',
     'matb33:collection-hooks@0.7.6'
   ], ['client', 'server']);
   api.use(['templating', 'jquery', 'less'], 'client');
