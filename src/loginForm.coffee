@@ -29,11 +29,11 @@ _.extend TemplateClass,
 
   login: (username, password, template) ->
     df = Q.defer()
-    Meteor.loginWithPassword username, password, (err) ->
+    Meteor.loginWithPassword username, password, (err) =>
       if err
         Logger.error('Error when logging in', err)
         @addMessage(@createErrorMessage(err.message), template)
-        q.reject(err)
+        df.reject(err)
       else
         Logger.debug('Successfully logged in:', username)
         AccountsUi.onAfterLogin()
