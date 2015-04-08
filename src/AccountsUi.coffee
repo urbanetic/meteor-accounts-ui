@@ -1,4 +1,4 @@
-AccountsUi = _.extend AccountsUi,
+AccountsUi =
 
   _config: null
 
