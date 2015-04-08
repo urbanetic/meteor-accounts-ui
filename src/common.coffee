@@ -23,8 +23,4 @@ AccountsUi =
 
     # Add the logged in user as the author when a doc is created in the collection.
     collection.before.insert (userId, doc) ->
-      if Meteor.isClient
-        username = Meteor.users.findOne(userId)?.username
-      else
-        username = 'admin'
-      doc.author = username
+      doc.author = Meteor.users.findOne(userId)?.username
