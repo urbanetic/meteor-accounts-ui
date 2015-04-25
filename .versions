@@ -3,7 +3,8 @@ accounts-password@1.1.1
 accounts-ui@1.1.5
 accounts-ui-unstyled@1.1.7
 aramk:q@1.0.1_1
-aramk:utility@0.4.2
+aramk:tinycolor@1.1.0_1
+aramk:utility@0.8.3
 base64@1.0.3
 binary-heap@1.0.3
 blaze@2.1.2
@@ -30,6 +31,7 @@ matb33:collection-hooks@0.7.6
 meteor@1.1.6
 minifiers@1.1.5
 minimongo@1.0.8
+momentjs:moment@2.9.0
 mongo@1.1.0
 npm-bcrypt@0.7.8_2
 observe-sequence@1.0.6
@@ -47,5 +49,5 @@ stevezhu:lodash@0.2.0
 templating@1.1.1
 tracker@1.0.7
 underscore@1.0.3
-urbanetic:accounts-ui@0.2.0
+urbanetic:accounts-ui@0.2.1
 url@1.0.4

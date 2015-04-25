@@ -25,13 +25,6 @@ AccountsUtil =
     collection.before.insert (userId, doc) ->
       doc.author = Meteor.users.findOne(userId)?.username
   
-  _resolveUser: (user) ->
-    if Types.isString(user)
-      user = Meteor.users.findOne(user)
-    else
-      user ?= Meteor.user()
-    user
-  
   isOwner: (doc, user) ->
     user = @_resolveUser(user)
     doc.author == user.username
@@ -48,3 +41,16 @@ AccountsUtil =
   isAdmin: (user) ->
     user = @_resolveUser(user)
     Roles.userIsInRole(user, 'admin')
+
+  _resolveUser: (user) ->
+    if Types.isString(user)
+      user = Meteor.users.findOne(user)
+    else
+      # If no user is provided, attempt to request the current one. This will fail in publish
+      # methods where this.userId should be used instead. If this is undefined since no user is
+      # logged in, the logic below will still be invoked. In this case, we should consume the
+      # exception.
+      try
+        user ?= Meteor.user()
+      catch e
+    user
