@@ -13,14 +13,26 @@ Package.on_use(function(api) {
     'http',
     'accounts-password',
     'accounts-ui',
+    'aldeed:collection2@2.3.3',
+    'aldeed:simple-schema@1.3.2',
     'aramk:utility@0.8.3',
     'aramk:q@1.0.1_1',
     'digilord:roles@1.2.12',
     'matb33:collection-hooks@0.7.6'
   ], ['client', 'server']);
-  api.use(['templating', 'jquery', 'less'], 'client');
-  api.use(['iron:router@1.0.3'], 'client', {weak: true});
-  api.use(['urbanetic:accounts-local@0.1.1'], 'server', {weak: true});
+  api.use([
+    'templating',
+    'jquery',
+    'less',
+    'aldeed:autoform@4.0.7',
+    'aramk:collection-table@0.3.4'
+  ], 'client');
+  api.use([
+    'urbanetic:accounts-local@0.1.1'
+  ], 'server', {weak: true});
+  api.use([
+    'aramk:routes:0.2.0'
+  ], ['client', 'server'], {weak: true});
   api.addFiles([
     'src/AccountsUtil.coffee'
   ], ['client', 'server']);
@@ -31,7 +43,11 @@ Package.on_use(function(api) {
     'src/loginForm.coffee',
     'src/userNav.html',
     'src/userNav.less',
-    'src/userNav.coffee'
+    'src/userNav.coffee',
+    'src/userForm.html',
+    'src/userForm.coffee',
+    'src/usersTable.html',
+    'src/usersTable.coffee'
   ], 'client');
   api.export([
     'AccountsUi',
