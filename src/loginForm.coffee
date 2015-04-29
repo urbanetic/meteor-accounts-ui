@@ -35,7 +35,7 @@ _.extend TemplateClass,
         @addMessage(@createErrorMessage(err.message), template)
         df.reject(err)
       else
-        Logger.debug('Successfully logged in:', username)
+        Logger.info('Successfully logged in', username)
         AccountsUi.onAfterLogin()
         df.resolve()
     df.promise
