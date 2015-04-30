@@ -30,6 +30,7 @@ Meteor.startup ->
   Form = Forms.defineModelForm
     name: formName
     schema: schema
+    collection: collection
 
     onRender: ->
       # Hide password field unless checkbox is checked.

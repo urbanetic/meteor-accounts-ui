@@ -1,5 +1,7 @@
 <template name="userForm">
   <div class="ui error user form segment">
+    <h1>{{formTitle}}</h1>
+    
     {{#autoForm id=formName doc=doc schema=schema}}
 
       {{> afQuickField name="username"}}
