@@ -2,7 +2,7 @@ Package.describe({
   name: 'urbanetic:accounts-ui',
   summary: 'Simple UI for Meteor Accounts',
   git: 'https://github.com/urbanetic/meteor-accounts-ui.git',
-  version: '0.2.2'
+  version: '0.3.0'
 });
 
 Package.on_use(function(api) {
@@ -13,8 +13,8 @@ Package.on_use(function(api) {
     'http',
     'accounts-password',
     'accounts-ui',
-    'aldeed:collection2@2.3.3',
-    'aldeed:simple-schema@1.3.2',
+    'aldeed:collection2@2.3.2',
+    'aldeed:simple-schema@1.3.0',
     'aramk:utility@0.8.3',
     'aramk:q@1.0.1_1',
     'digilord:roles@1.2.12',
@@ -49,6 +49,9 @@ Package.on_use(function(api) {
     'src/usersTable.html',
     'src/usersTable.coffee'
   ], 'client');
+  api.addFiles([
+    'src/users.coffee'
+  ], ['server']);
   api.export([
     'AccountsUi',
     'AccountsUtil'
