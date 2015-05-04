@@ -12,11 +12,13 @@ AccountsUi =
     if Router
       Router.route(loginRoute, {path: loginRoute, template: loginTemplate})
 
-  signInRequired: (router) ->
-    config = @_config
+  signInRequired: (router, args) ->
+    args = Setter.merge({
+      callNext: true
+    }, args)
     user = Meteor.user()
     @goToLogin() unless user
-    router.next()
+    if args.callNext then router.next()
 
   onAfterLogin: -> @_config.afterLogin?()
 
