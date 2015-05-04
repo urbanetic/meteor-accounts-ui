@@ -31,7 +31,7 @@ Package.on_use(function(api) {
     'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
   api.use([
-    'aramk:routes:0.2.0'
+    'aramk:routes@0.2.0'
   ], ['client', 'server'], {weak: true});
   api.addFiles([
     'src/AccountsUtil.coffee'
