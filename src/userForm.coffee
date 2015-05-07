@@ -60,7 +60,7 @@ Meteor.startup ->
       # Only allow updates in an update form.
       Meteor.call 'users/upsert', userArgs, {allowUpdate: !!currentDoc}, (err, result) =>
         if err
-          console.error('Error creating user', err)
+          Logger.error('Error creating user', err)
         else
           @done()
       return false
