@@ -9,8 +9,6 @@ Meteor.startup ->
 
     # Don't show "user" role as an option which is added to all users.
     roles = Meteor.roles.find({name: {$not: 'user'}}).map (role) -> role.name
-    console.log('Roles', roles)
-    console.log('All roles', Meteor.roles.find({name: {$not: 'user'}}).fetch())
     schema = new SimpleSchema
       username:
         type: String
