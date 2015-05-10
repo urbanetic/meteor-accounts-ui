@@ -5,7 +5,7 @@ Meteor.methods
       # Pass false if only inserts should be possible.
       allowUpdate: true
     }, options)
-    if !Roles.userIsInRole(Meteor.user(), ['admin'])
+    unless AccountsUtil.isAdmin()
       throw new Meteor.Error(403, 'Admin privileges required.')
     username = userArgs.username
     name = userArgs.name
@@ -13,7 +13,11 @@ Meteor.methods
     emails = userArgs.emails
     roles = userArgs.roles || []
     roles = _.union(roles, ['user'])
-    selector = {username: username}
+    selector = {}
+    if userArgs._id
+      selector._id = userArgs._id
+    else if username
+      selector.username = username
     user = Meteor.users.findOne(selector)
     if !user && !password
       throw new Meteor.Error(500, 'Cannot create a user without a password.')

@@ -1,6 +1,5 @@
 formName = 'userForm'
 TemplateClass = Template[formName]
-collection = Meteor.users
 collectionName = 'users'
 collectionTitle = 'Users'
 
@@ -34,7 +33,7 @@ Meteor.startup ->
     Form = Forms.defineModelForm
       name: formName
       schema: schema
-      collection: collection
+      collectionName: collectionName
 
       onRender: ->
         # Hide password field unless checkbox is checked.
@@ -53,6 +52,8 @@ Meteor.startup ->
           username: username
           name: name
           roles: roles
+        if currentDoc
+          userArgs._id = currentDoc._id
         email = insertDoc.email
         if email && email.trim().length > 0
           userArgs.emails = [{address: email, verified: false}]
