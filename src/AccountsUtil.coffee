@@ -54,3 +54,10 @@ AccountsUtil =
         user ?= Meteor.user()
       catch e
     user
+
+# Set up role publications.
+
+if Meteor.isServer
+  Meteor.publish 'roles', -> Meteor.roles.find({})
+else
+  Meteor.subscribe('roles')
