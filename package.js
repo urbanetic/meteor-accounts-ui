@@ -2,7 +2,7 @@ Package.describe({
   name: 'urbanetic:accounts-ui',
   summary: 'Simple UI for Meteor Accounts',
   git: 'https://github.com/urbanetic/meteor-accounts-ui.git',
-  version: '0.3.0'
+  version: '0.4.0'
 });
 
 Package.on_use(function(api) {
@@ -24,7 +24,7 @@ Package.on_use(function(api) {
     'templating',
     'jquery',
     'less',
-    'aldeed:autoform@4.0.7',
+    'aldeed:autoform@5.1.2',
     'aramk:collection-table@0.3.4'
   ], 'client');
   api.use([
