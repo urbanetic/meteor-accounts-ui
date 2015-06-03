@@ -11,9 +11,9 @@ AccountsUtil =
         return unless userId
         user = Meteor.users.findOne(userId)
         username = user.username
-        Logger.info('User subscribed to collection', userId, username, name)
+        Logger.info("User '#{username}' subscribed to collection '#{name}'")
         @onStop ->
-          Logger.info('User unsubscribed from collection', userId, username, name)
+          Logger.info("User '#{username}' unsubscribed from collection '#{name}'")
         if username == 'admin'
           # Admin can see all docs.
           collection.find()
