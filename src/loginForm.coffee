@@ -1,19 +1,14 @@
-TemplateClass = Template.loginForm
+Form = AccountsForm.define('loginForm')
 
-TemplateClass.rendered = -> TemplateClass.getUsernameInput(@).focus()
+Form.rendered = -> Form.getUsernameInput(@).focus()
 
-TemplateClass.helpers
-  config: -> AccountsUi.config()
-
-TemplateClass.events
-  'submit form': (e, template) -> TemplateClass.onSubmit(e, template)
+Form.events
+  'submit form': (e, template) -> Form.onSubmit(e, template)
   'click .forgot.button': -> AccountsUi.goToForgot()
 
-_.extend TemplateClass,
+_.extend Form,
 
   onSubmit: (e, template) ->
-    e.preventDefault()
-    @clearMessages()
     $username = @getUsernameInput(template)
     $password = template.$('[name="password"]')
     username = $username.val().trim()
@@ -44,24 +39,5 @@ _.extend TemplateClass,
         df.resolve()
     df.promise
 
-  getFormDom: (template) -> getTemplate(template).$('form')
-
-  getSubmitButton: (template) -> getTemplate(template).$('[type="submit"]')
-
-  clearMessages: (template) ->
-    @getFormDom(template).removeClass('error')
-    @getMessagesDom(template).empty()
-
-  addMessage: ($message, template) ->
-    @getMessagesDom(template).prepend($message)
-    if $message.hasClass('error')
-      @getFormDom(template).addClass('error')
-
-  getMessagesDom: (template) -> getTemplate(template).$('.messages')
-
-  getUsernameInput: (template) -> getTemplate(template).$('[name="username"]')
-
-  createErrorMessage: (err) -> $('<div class="ui error message">' + err.toString() + '</div>')
-
-getTemplate = (template) -> template ? Template.instance()
+  getUsernameInput: (template) -> Form.getTemplate(template).$('[name="username"]')
 

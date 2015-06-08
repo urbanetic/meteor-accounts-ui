@@ -12,13 +12,13 @@ Package.on_use(function(api) {
     'underscore',
     'http',
     'accounts-password',
-    'accounts-ui',
     'aldeed:collection2@2.3.2',
     'aldeed:simple-schema@1.3.0',
     'aramk:utility@0.8.3',
     'aramk:q@1.0.1_1',
     'digilord:roles@1.2.12',
-    'matb33:collection-hooks@0.7.6'
+    'matb33:collection-hooks@0.7.6',
+    'reactive-var@1.0.5'
   ], ['client', 'server']);
   api.use([
     'templating',
@@ -33,18 +33,22 @@ Package.on_use(function(api) {
   api.use([
     'aramk:routes@0.2.0'
   ], ['client', 'server'], {weak: true});
-  api.imply(['accounts-ui', 'accounts-password', 'aldeed:autoform']);
-  api.addFiles([
-    'src/AccountsUtil.coffee'
-  ], ['client', 'server']);
+  api.imply(['accounts-password', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',
+    'src/AccountsUtil.coffee',
+    'src/publications.coffee'
+  ], ['client', 'server']);
+  api.addFiles([
+    'src/AccountsForm.coffee',
     'src/accounts-ui.less',
     'src/loginForm.html',
     'src/loginForm.less',
     'src/loginForm.coffee',
-    'src/forgotForm.html',
-    'src/forgotForm.coffee',
+    'src/forgotPasswordForm.html',
+    'src/forgotPasswordForm.coffee',
+    'src/resetPasswordForm.html',
+    'src/resetPasswordForm.coffee',
     'src/userNav.html',
     'src/userNav.less',
     'src/userNav.coffee',

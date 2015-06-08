@@ -10,8 +10,4 @@ TemplateClass.events
 
 TemplateClass.helpers
 
-  onAccountsRoute: ->
-    config = AccountsUi.config()
-    currentRoute = Router.getCurrentName()
-    routes = [config.login.route, config.forgot.route, config.signUp.route]
-    _.indexOf(routes, currentRoute) >= 0
+  isOnAccountsRoute: -> AccountsUi.isOnAccountsRoute()

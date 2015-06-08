@@ -5,27 +5,39 @@ AccountsUi =
   config: (config) ->
     @_config ?=
       login:
-        route: 'login'
+        path: 'login'
         template: 'loginForm'
       forgot:
         enabled: false
-        route: 'forgot'
-        template: 'forgotForm'
+        path: 'forgot-password'
+        template: 'forgotPasswordForm'
+      reset:
+        # NOTE: This should not be changed since it's used in the generated emails.
+        path: 'reset-password/:resetToken'
+        template: 'resetPasswordForm'
+        onBeforeAction: ->
+          resetToken = @params.resetToken
+          Session.set('resetToken', resetToken)
+          @next()
       signUp:
         enabled: false
-        route: 'signup'
+        path: 'signup'
         template: 'signUpForm'
-      passwordSignupFields: 'USERNAME_AND_EMAIL'
+      # passwordSignupFields: 'USERNAME_AND_EMAIL'
       setUpRoutes: ->
         config = @config()
-        createRoute(config.login.route, config.login.template)
+        createRoute 'login', config.login
         if config.forgot.enabled == true
-          createRoute(config.forgot.route, config.forgot.template)
+          createRoute 'forgotPassword', config.forgot
+          createRoute 'resetPassword', config.reset
+        Tracker.autorun ->
+          user = Meteor.user()
+          currentRoute = Router.getCurrentName()
+          if currentRoute == 'login' && user then AccountsUi.onAfterLogin()
 
     Setter.merge(@_config, config)
     unless config then return @_config
-    setUp.call(@)
-    setUpRoutes(@_config.setUpRoutes)
+    setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
     @_config
 
   signInRequired: (router, args) ->
@@ -33,24 +45,33 @@ AccountsUi =
       callNext: true
     }, args)
     user = Meteor.user()
+    currentRoute = Router.getCurrentName()
     @goToLogin() unless user
     if args.callNext then router.next()
 
   onAfterLogin: -> @_config.afterLogin?()
 
-  goToLogin: -> Router.go(@_config.login.route)
+  goToLogin: -> Router.go('login')
 
   goToForgot: ->
     unless @_config.forgot.enabled
       throw new Error('Forgot password not allowed')
-    Router.go(@_config.forgot.route)
+    Router.go('forgotPassword')
+
+  isOnAccountsRoute: ->
+    config = @config()
+    currentRoute = Router.getCurrentName()
+    routes = ['login', 'forgotPassword', 'resetPassword']
+    _.indexOf(routes, currentRoute) >= 0
+
 
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
-createRoute = (route, templateName) ->
-  Router.route route,
-    path: route
-    template: templateName
+createRoute = (name, args) -> Router.route name, args
+# Set up the default configuration.
+AccountsUi.config()
 
-setUp = _.once ->
-  config = @config()
-  Accounts.ui.config(passwordSignupFields: config.passwordSignupFields)
+if Meteor.isServer
+  Meteor.startup ->
+    # Redefine these URLs to be compatible with Iron Router by removing the '#/' prefix.
+    Accounts.urls.resetPassword = (token) -> Meteor.absoluteUrl('reset-password/' + token)
+    Accounts.urls.enrollAccount = (token) -> Meteor.absoluteUrl('enroll-account/' + token)
