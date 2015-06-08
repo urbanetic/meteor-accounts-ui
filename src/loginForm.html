@@ -1,5 +1,5 @@
 <template name="loginForm">
-  <div class="login-form">
+  <div class="login-form accounts-form">
     <div class="logo"></div>
     <form class="ui form">
       <div class="field">
@@ -10,6 +10,14 @@
       </div>
       <div class="buttons">
         <button class="ui primary button" type="submit">Login</button>
+        <div class="ui extra vertical buttons">
+          {{#if config.forgot.enabled}}
+            <div class="ui forgot button">Forgot Password</div>
+          {{/if}}
+          {{#if config.signUp.enabled}}
+            <div class="ui sign-up button">Sign Up</div>
+          {{/if}}
+        </div>
       </div>
       <div class="messages"></div>
     </form>

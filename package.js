@@ -33,14 +33,18 @@ Package.on_use(function(api) {
   api.use([
     'aramk:routes@0.2.0'
   ], ['client', 'server'], {weak: true});
+  api.imply(['accounts-ui', 'accounts-password', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUtil.coffee'
   ], ['client', 'server']);
   api.addFiles([
     'src/AccountsUi.coffee',
+    'src/accounts-ui.less',
     'src/loginForm.html',
     'src/loginForm.less',
     'src/loginForm.coffee',
+    'src/forgotForm.html',
+    'src/forgotForm.coffee',
     'src/userNav.html',
     'src/userNav.less',
     'src/userNav.coffee',

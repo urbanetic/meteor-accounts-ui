@@ -9,14 +9,7 @@ To configure the package, call the following from the client on startup:
 ```
 Meteor.startup(function() {
   AccountsUi.config({
-    // Called after a successful login.
-    afterLogin: function() {
-      return Router.go('/projects');
-    },
-    // The route to the login form.
-    loginRoute: 'login', // Default
-    // The template for the login form.
-    loginTemplate: 'loginForm' // Default
+    // Additinonal configuration.
   });
 });
 ```

@@ -2,8 +2,12 @@ TemplateClass = Template.loginForm
 
 TemplateClass.rendered = -> TemplateClass.getUsernameInput(@).focus()
 
+TemplateClass.helpers
+  config: -> AccountsUi.config()
+
 TemplateClass.events
   'submit form': (e, template) -> TemplateClass.onSubmit(e, template)
+  'click .forgot.button': -> AccountsUi.goToForgot()
 
 _.extend TemplateClass,
 
