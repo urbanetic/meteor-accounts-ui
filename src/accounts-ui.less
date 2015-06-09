@@ -14,3 +14,69 @@
     }
   }
 }
+
+.login-form {
+  .messages {
+    margin-top: 15px;
+  }
+  .links {
+    margin-top: 50px;
+    text-align: center;
+    a {
+      margin: 0 10px;
+      color: #999;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  .logo {
+    min-height: 100px;
+    background: #ccc;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 10px 0 20px 0;
+  }
+  .buttons {
+    margin-top: 20px;
+    .extra {
+      display: block;
+      margin: 10px 0;
+      .button {
+        background: none;
+        font-size: 0.8rem;
+        margin: 0 5px;
+      }
+    }
+  }
+}
+
+.sign-up-form {
+  width: 400px;
+  .user-form {
+    h1, .buttons, .footer, .roles.field {
+      display: none;
+    }
+  }
+}
+
+.user-form {
+  .form-group {
+    margin-bottom: 1rem;
+  }
+}
+
+.user-nav {
+  display: inline-block;
+  > * {
+    display: inline-block;
+  }
+  .name {
+    margin-right: 5px;
+    text-transform: uppercase;
+  }
+  .button:last-child {
+    margin: 0;
+  }
+}

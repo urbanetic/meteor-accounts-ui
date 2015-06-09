@@ -5,6 +5,7 @@ Form.rendered = -> Form.getUsernameInput(@).focus()
 Form.events
   'submit form': (e, template) -> Form.onSubmit(e, template)
   'click .forgot.button': -> AccountsUi.goToForgot()
+  'click .sign-up.button': -> AccountsUi.goToSignUp()
 
 _.extend Form,
 
@@ -18,7 +19,7 @@ _.extend Form,
     if username == '' || password == ''
       err = 'Must provide both username and password'
       Logger.error(err)
-      @addMessage(@createErrorMessage(err))
+      @addMessage @createErrorMessage(err)
       return
     Logger.debug('Logging in with username:', username)
     $submit.addClass('disabled')
@@ -31,7 +32,7 @@ _.extend Form,
     Meteor.loginWithPassword username, password, (err) =>
       if err
         Logger.error('Error when logging in', err)
-        @addMessage(@createErrorMessage(err.message), template)
+        @addMessage @createErrorMessage(err), template
         df.reject(err)
       else
         Logger.info('Successfully logged in', username)

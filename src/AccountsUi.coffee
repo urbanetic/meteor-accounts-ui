@@ -21,8 +21,11 @@ AccountsUi =
           @next()
       signUp:
         enabled: false
-        path: 'signup'
+        requireApproval: true
+        path: 'sign-up'
         template: 'signUpForm'
+      strings:
+        disabledAccount: 'Your account has not been activated. Please contact us for assistance.'
       # passwordSignupFields: 'USERNAME_AND_EMAIL'
       setUpRoutes: ->
         config = @config()
@@ -30,10 +33,18 @@ AccountsUi =
         if config.forgot.enabled == true
           createRoute 'forgotPassword', config.forgot
           createRoute 'resetPassword', config.reset
+        if config.signUp.enabled == true
+          createRoute 'signUp', config.signUp
         Tracker.autorun ->
           user = Meteor.user()
           currentRoute = Router.getCurrentName()
           if currentRoute == 'login' && user then AccountsUi.onAfterLogin()
+        Routes.crudRoute Meteor.users,
+          data:
+            settings:
+              onSuccess: -> Router.goToLastPath() || Router.go('/')
+              onCancel: -> Router.goToLastPath() || Router.go('/')
+          onBeforeAction: -> if Meteor.isAdmin() then @next() else AccountsUi.goToLogin()
 
     Setter.merge(@_config, config)
     unless config then return @_config
@@ -58,13 +69,17 @@ AccountsUi =
       throw new Error('Forgot password not allowed')
     Router.go('forgotPassword')
 
+  goToSignUp: ->
+    unless @_config.forgot.enabled
+      throw new Error('Sign-up not allowed')
+    Router.go('signUp')
+
   isOnAccountsRoute: ->
     config = @config()
     currentRoute = Router.getCurrentName()
-    routes = ['login', 'forgotPassword', 'resetPassword']
-    _.indexOf(routes, currentRoute) >= 0
+    _.indexOf(ROUTE_NAMES, currentRoute) >= 0
 
-
+ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
 createRoute = (name, args) -> Router.route name, args
 # Set up the default configuration.

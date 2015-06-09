@@ -1,10 +1,7 @@
-<template name="resetPasswordForm">
-  <div class="reset-password-form accounts-form">
+<template name="signUpForm">
+  <div class="sign-up-form accounts-form">
     <form class="ui form">
-      <p>Enter a new password to reset:</p>
-      <div class="field">
-        <input type="password" name="password" placeholder="password" />
-      </div>
+      {{> userForm settings=settings}}
       <div class="ui submit buttons">
         <div class="ui cancel button">Cancel</div>
         <div class="ui primary submit button">Submit</div>

@@ -1,17 +1,18 @@
 <template name="userForm">
-  <div class="ui error user form segment">
+  <div class="user-form ui error user form segment">
     <h1>{{formTitle}}</h1>
-    
     {{#autoForm id=formName doc=doc schema=schema}}
 
       {{> afQuickField name="username"}}
       {{#if doc}}
         {{> checkbox name="change-password" label="Change Password"}}
       {{/if}}
-      {{> afQuickField name="password"}}
+      {{> afQuickField name="password" type="password"}}
       {{> afQuickField name="profile.name"}}
       {{> afQuickField name="email"}}
-      {{> afQuickField name="roles" options="allowed"}}
+      <div class="roles field">
+        {{> afQuickField name="roles" options="allowed"}}
+      </div>
 
       <div class="buttons">
         <button type="button" class="ui red cancel button">Cancel</button>

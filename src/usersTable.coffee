@@ -1,5 +1,16 @@
 TemplateClass = Template.usersTable
 
+TemplateClass.events
+  'change .enabled input[type="checkbox"]': (e, template) ->
+    $checkbox = $(e.currentTarget)
+    user = Blaze.getData($checkbox.closest('tr')[0])
+    enabled = $checkbox.is(':checked')
+    modifier = {_id: user._id, enabled: enabled}
+    $checkbox.prop('disabled', true)
+    Meteor.call 'users/upsert', modifier, (err, result) ->
+      $checkbox.prop('disabled', false)
+      if err then Logger.error(err)
+
 TemplateClass.helpers
   
   users: -> Meteor.users.find({username: {$not: 'admin'}})
@@ -21,6 +32,13 @@ TemplateClass.helpers
         fn: (value, object) ->
           value.sort()
           value.join(', ')
+      }
+      {
+        key: 'enabled'
+        label: 'Enabled'
+        fn: (value, object) ->
+          checkedStr = if value then 'checked' else ''
+          Spacebars.SafeString('<input type="checkbox" ' + checkedStr + '/>')
       }
     ]
     onDelete: (args) ->
