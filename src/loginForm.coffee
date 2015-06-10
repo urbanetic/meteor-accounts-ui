@@ -36,7 +36,6 @@ _.extend Form,
         df.reject(err)
       else
         Logger.info('Successfully logged in', username)
-        AccountsUi.onAfterLogin()
         df.resolve()
     df.promise
 

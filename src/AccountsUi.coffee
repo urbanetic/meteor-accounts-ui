@@ -52,7 +52,7 @@ AccountsUi =
         Tracker.autorun ->
           user = Meteor.user()
           currentRoute = Router.getCurrentName()
-          if currentRoute == 'login' && user then AccountsUi.onAfterLogin()
+          if currentRoute == 'login' && user then config.login.after?()
         Routes.crudRoute Meteor.users,
           data:
             settings:
@@ -77,8 +77,6 @@ AccountsUi =
     currentRoute = Router.getCurrentName()
     @goToLogin() unless user
     if args.callNext then router.next()
-
-  onAfterLogin: -> @_config.afterLogin?()
 
   goToLogin: -> Router.go('login')
 
