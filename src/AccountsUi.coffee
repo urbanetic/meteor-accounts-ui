@@ -52,7 +52,7 @@ AccountsUi =
         Tracker.autorun ->
           user = Meteor.user()
           currentRoute = Router.getCurrentName()
-          if currentRoute == 'login' && user then config.login.after?()
+          if currentRoute == 'login' && user then config.login.onSuccess?()
         Routes.crudRoute Meteor.users,
           data:
             settings:
@@ -97,7 +97,11 @@ AccountsUi =
 
 ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp', 'verifyEmail']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
-createRoute = (name, args) -> Router.route name, args
+createRoute = (name, args) -> Router.route name,
+  # NOTE: We mix various properties so it's not safe to pass all arguments into route().
+  path: args.path
+  template: args.template
+  onBeforeAction: args.onBeforeAction
 
 if Meteor.isServer
   Meteor.startup ->
