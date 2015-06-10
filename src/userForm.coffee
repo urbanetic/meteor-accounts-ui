@@ -66,12 +66,15 @@ Meteor.startup ->
           if doc?.roles && _.contains(doc.roles, name) then $role.prop('selected', true)
 
     onSubmit: (insertDoc, updateDoc, currentDoc) ->
+      settings = getSettings(@template)
       password = insertDoc.password
       modifier =
         username: insertDoc.username
         name: insertDoc.profile.name
         roles: insertDoc.roles
         enabled: insertDoc.enabled
+      options =
+        allowUpdate: settings.allowUpdate ? currentDoc?
       if currentDoc
         modifier._id = currentDoc._id
       email = insertDoc.email
@@ -83,10 +86,12 @@ Meteor.startup ->
       if shouldChangePassword
         modifier.password = password
       # Only allow updates in an update form.
-      Meteor.call 'users/upsert', modifier, {allowUpdate: currentDoc?}, (err, result) =>
+      Meteor.call 'users/upsert', modifier, options, (err, result) =>
         delete modifier.password
         if err
-          Logger.error('Error creating user', err)
+          notifyArg = undefined
+          if settings.loggerNotify == false then notifyArg = {notify: false}
+          Logger.error('Error creating user', err, notifyArg)
           @done(err, null)
         else
           modifier._id = result

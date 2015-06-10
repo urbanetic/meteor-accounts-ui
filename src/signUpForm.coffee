@@ -15,6 +15,12 @@ Form.helpers
       msg = Form.createErrorMessage(err)
       Form.addMessage(msg, template)
       onFinish(template)
+    # Ensures the server fails early with a meaningful message rather than a cryptic MongoDB error
+    # if existing user details are submitted.
+    allowUpdate: false
+    # Don't notify with Logger since we're printing error messages in this template.
+    loggerNotify: false
+  
   isSuccess: -> Form.getTemplate().isSuccess.get()
 
 Form.events

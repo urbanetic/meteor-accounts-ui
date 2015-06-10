@@ -117,10 +117,10 @@ if Meteor.isServer
       email = _.extend({
         from: config.email.fromAddress
       }, email)
+      Logger.info('Created email', email)
+      email
 
-    sendEmail: (email) ->
-      @unblock()
-      Email.send(email)
+    sendEmail: (email) -> Email.send(@createEmail(email))
 
     sendEmailToAdmin: (email) ->
       config = AccountsUi.config()
@@ -128,7 +128,6 @@ if Meteor.isServer
         to: config.email.adminAddress
       }, email)
       @sendEmail(email)
-      Logger.info('Sent email to admin', email)
 
     sendEmailToUser: (args) ->
       selector = args.user
@@ -147,4 +146,3 @@ if Meteor.isServer
         to: emailAddress
       }, email)
       @sendEmail(email)
-      Logger.info('Sent email to user', selector, email)

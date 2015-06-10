@@ -32,14 +32,21 @@ Meteor.methods
     if modifier._id
       selector._id = modifier._id
       delete modifier._id
-    else if username
-      selector.username = username
+    else
+      $or = []
+      if username
+        $or.push {username: username}
+      _.each modifier.emails, (email) ->
+        $or.push {'emails.address': email.address}
+      selector = {$or: $or}
     
-    Logger.info('Upserting user', selector, modifier)
+    Logger.info('Upserting user', selector, modifier, options)
+    # Prevent sending emails from blocking other users.
+    @unblock()
 
     existingUser = Meteor.users.findOne(selector)
-    if (existingUser? && !options.allowUpdate)
-      throw new Meteor.Error(500, 'User already exists and updates are not allowed.')
+    if existingUser? && !options.allowUpdate
+      throw new Meteor.Error(500, 'User already exists.')
     else if !isAdmin && existingUser? && existingUser._id != @userId
       throw new Meteor.Error(403, 'Not authorized to update other users.')
     Meteor.users.upsert selector, $set: modifier
