@@ -3,15 +3,17 @@
   define: (name) ->
     Form = Template[name]
 
-    Form.helpers
+    Form.helpersMap =
       config: -> AccountsUi.config()
+    Form.helpers(Form.helpersMap)
 
-    Form.events
+    Form.eventsMap =
       'submit form': (e, template) ->
         e.preventDefault()
         Form.clearMessages()
       'click .cancel.button': -> AccountsUi.goToLogin()
       'click .login.button': -> AccountsUi.goToLogin()
+    Form.events(Form.eventsMap)
     
     _.extend Form,
       getFormDom: (template) -> @getTemplate(template).$('form')

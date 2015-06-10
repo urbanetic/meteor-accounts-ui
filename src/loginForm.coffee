@@ -2,10 +2,12 @@ Form = AccountsForm.define('loginForm')
 
 Form.rendered = -> Form.getUsernameInput(@).focus()
 
-Form.events
+eventsMap =
   'submit form': (e, template) -> Form.onSubmit(e, template)
   'click .forgot.button': -> AccountsUi.goToForgot()
   'click .sign-up.button': -> AccountsUi.goToSignUp()
+_.extend Form.eventsMap, eventsMap
+Form.events(eventsMap)
 
 _.extend Form,
 
@@ -18,7 +20,7 @@ _.extend Form,
     $submit = @getSubmitButton()
     if username == '' || password == ''
       err = 'Must provide both username and password'
-      Logger.error(err)
+      Logger.error(err, {notify: false})
       @addMessage @createErrorMessage(err)
       return
     Logger.debug('Logging in with username:', username)
@@ -26,6 +28,7 @@ _.extend Form,
     Q.when(@login(username, password, template)).fin(
       -> $submit.removeClass('disabled')
     ).done()
+    return false
 
   login: (username, password, template) ->
     df = Q.defer()
@@ -38,6 +41,3 @@ _.extend Form,
         Logger.info('Successfully logged in', username)
         df.resolve()
     df.promise
-
-  getUsernameInput: (template) -> Form.getTemplate(template).$('[name="username"]')
-
