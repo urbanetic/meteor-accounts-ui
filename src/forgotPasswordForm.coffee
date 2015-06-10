@@ -4,9 +4,6 @@ Form.created = ->
   @isSuccess = new ReactiveVar(false)
 
 Form.events
-  
-  'click .cancel.button': -> AccountsUi.goToLogin()
-
   'click .submit.button': (e, template) ->
     Form.clearMessages()
     # TODO(aramk) Use an AutoForm schema for validation.

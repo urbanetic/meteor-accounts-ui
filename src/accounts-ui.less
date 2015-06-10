@@ -39,14 +39,17 @@
     margin: 10px 0 20px 0;
   }
   .buttons {
+    .primary.button {
+      margin: 0;
+    }
     margin-top: 20px;
     .extra {
+      width: 120px;
       display: block;
-      margin: 10px 0;
+      margin: 10px auto;
       .button {
         background: none;
         font-size: 0.8rem;
-        margin: 0 5px;
       }
     }
   }
@@ -55,7 +58,7 @@
 .sign-up-form {
   width: 400px;
   .user-form {
-    h1, .buttons, .footer, .roles.field {
+    h1, .buttons, .footer, .required {
       display: none;
     }
   }

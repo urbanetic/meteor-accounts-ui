@@ -24,6 +24,9 @@ Meteor.startup ->
     email:
       type: String
       regEx: SimpleSchema.RegEx.Email
+    enabled:
+      type: Boolean
+      defaultValue: false
     roles:
       type: [String]
       # TODO(aramk) Custom asynch validation doesn't work.
@@ -63,14 +66,12 @@ Meteor.startup ->
           if doc?.roles && _.contains(doc.roles, name) then $role.prop('selected', true)
 
     onSubmit: (insertDoc, updateDoc, currentDoc) ->
-      username = insertDoc.username
-      name = insertDoc.profile.name
       password = insertDoc.password
-      roles = insertDoc.roles
       modifier =
-        username: username
-        name: name
-        roles: roles
+        username: insertDoc.username
+        name: insertDoc.profile.name
+        roles: insertDoc.roles
+        enabled: insertDoc.enabled
       if currentDoc
         modifier._id = currentDoc._id
       email = insertDoc.email
@@ -83,10 +84,13 @@ Meteor.startup ->
         modifier.password = password
       # Only allow updates in an update form.
       Meteor.call 'users/upsert', modifier, {allowUpdate: currentDoc?}, (err, result) =>
+        delete modifier.password
         if err
           Logger.error('Error creating user', err)
+          @done(err, null)
         else
-          @done()
+          modifier._id = result
+          @done(null, modifier)
       return false
 
     hooks:
@@ -94,7 +98,10 @@ Meteor.startup ->
         emails = doc.emails
         if emails && emails.length > 0
           doc.email = doc.emails[0].address
-        return doc
+        doc
+
+  Form.helpers
+    isAdmin: -> AccountsUtil.isAdmin()
 
   getPasswordInput = (template) -> getTemplate(template).$('[name="password"]')
 

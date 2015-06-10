@@ -6,8 +6,6 @@ TemplateClass.events
     result = confirm('Are you sure you want to logout?')
     Meteor.logout() if result
   
-  'click .login.button': (e, template) -> AccountsUi.goToLogin()
-
 TemplateClass.helpers
 
   isOnAccountsRoute: -> AccountsUi.isOnAccountsRoute()

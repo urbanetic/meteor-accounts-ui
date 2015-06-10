@@ -8,10 +8,11 @@ Package.describe({
 Package.on_use(function(api) {
   api.versionsFrom('METEOR@0.9.0');
   api.use([
-    'coffeescript',
-    'underscore',
-    'http',
     'accounts-password',
+    'coffeescript',
+    'email',
+    'http',
+    'underscore',
     'aldeed:collection2@2.3.2',
     'aldeed:simple-schema@1.3.0',
     'aramk:checkbox@0.1.0',
@@ -48,6 +49,7 @@ Package.on_use(function(api) {
     'src/forgotPasswordForm.html',
     'src/forgotPasswordForm.coffee',
     'src/resetPasswordForm.html',
+    'src/resetPasswordForm.coffee',
     'src/signUpForm.html',
     'src/signUpForm.coffee',
     'src/userNav.html',
@@ -55,7 +57,9 @@ Package.on_use(function(api) {
     'src/userForm.html',
     'src/userForm.coffee',
     'src/usersTable.html',
-    'src/usersTable.coffee'
+    'src/usersTable.coffee',
+    'src/verifyForm.html',
+    'src/verifyForm.coffee'
   ], 'client');
   api.addFiles([
     'src/users.coffee'

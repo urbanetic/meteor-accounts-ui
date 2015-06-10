@@ -1,11 +1,19 @@
 <template name="signUpForm">
   <div class="sign-up-form accounts-form">
+    <h1>Sign-Up</h1>
     <form class="ui form">
-      {{> userForm settings=settings}}
-      <div class="ui submit buttons">
-        <div class="ui cancel button">Cancel</div>
-        <div class="ui primary submit button">Submit</div>
-      </div>
+      {{#if isSuccess}}
+        <div class="ui message green">
+          Sign-up succeeded. Please check your inbox for instructions.
+        </div>
+        <div class="ui login button">Login</div>
+      {{else}}
+        {{> userForm settings=settings}}
+        <div class="ui submit buttons">
+          <div class="ui cancel button">Cancel</div>
+          <div class="ui primary submit button">Submit</div>
+        </div>
+      {{/if}}
       <div class="messages"></div>
     </form>
   </div>

@@ -31,7 +31,7 @@ _.extend Form,
     df = Q.defer()
     Meteor.loginWithPassword username, password, (err) =>
       if err
-        Logger.error('Error when logging in', err)
+        Logger.error('Error when logging in', err, {notify: false})
         @addMessage @createErrorMessage(err), template
         df.reject(err)
       else

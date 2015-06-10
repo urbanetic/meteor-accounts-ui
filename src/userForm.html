@@ -10,9 +10,12 @@
       {{> afQuickField name="password" type="password"}}
       {{> afQuickField name="profile.name"}}
       {{> afQuickField name="email"}}
-      <div class="roles field">
-        {{> afQuickField name="roles" options="allowed"}}
-      </div>
+      {{#if isAdmin}}
+        {{> afQuickField name="enabled"}}
+        <div class="roles field">
+          {{> afQuickField name="roles" options="allowed"}}
+        </div>
+      {{/if}}
 
       <div class="buttons">
         <button type="button" class="ui red cancel button">Cancel</button>

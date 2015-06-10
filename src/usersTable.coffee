@@ -12,34 +12,35 @@ TemplateClass.events
       if err then Logger.error(err)
 
 TemplateClass.helpers
-  
   users: -> Meteor.users.find({username: {$not: 'admin'}})
-
-  usersTableSettings: ->
-    fields: [
-      {key: 'username', label: 'Username'}
-      {key: 'profile.name', label: 'Name'},
-      {
-        key: 'emails'
-        label: 'Email'
-        fn: (value, object) ->
-          emails = _.map value, (email) -> email.address;
-          emails.join(', ')
-      }
-      {
-        key: 'roles'
-        label: 'Roles'
-        fn: (value, object) ->
-          value.sort()
-          value.join(', ')
-      }
-      {
+  settings: ->
+    isAdmin = AccountsUtil.isAdmin()
+    settings =
+      fields: [
+        {key: 'username', label: 'Username'}
+        {key: 'profile.name', label: 'Name'}
+        {
+          key: 'emails'
+          label: 'Email'
+          fn: (value, object) ->
+            emails = _.map value, (email) -> email.address
+            emails.join(', ')
+        }
+        {
+          key: 'roles'
+          label: 'Roles'
+          fn: (value, object) ->
+            value.sort()
+            value.join(', ')
+        }
+      ]
+      onDelete: (args) -> _.each args.ids, (id) -> Meteor.call('users/remove', id)
+      crudMenu: isAdmin
+    if isAdmin
+      settings.fields.push
         key: 'enabled'
         label: 'Enabled'
         fn: (value, object) ->
           checkedStr = if value then 'checked' else ''
           Spacebars.SafeString('<input type="checkbox" ' + checkedStr + '/>')
-      }
-    ]
-    onDelete: (args) ->
-      _.each args.ids, (id) -> Meteor.call('users/remove', id)
+    settings
