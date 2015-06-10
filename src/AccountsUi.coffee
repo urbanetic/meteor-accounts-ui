@@ -112,11 +112,14 @@ if Meteor.isServer
     Accounts.urls.verifyEmail = (token) -> Meteor.absoluteUrl('verify-email/' + token)
 
   _.extend AccountsUi,
-    sendEmail: (email) ->
+    createEmail: (email) ->
       config = AccountsUi.config()
       email = _.extend({
         from: config.email.fromAddress
       }, email)
+
+    sendEmail: (email) ->
+      @unblock()
       Email.send(email)
 
     sendEmailToAdmin: (email) ->
