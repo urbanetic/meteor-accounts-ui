@@ -120,7 +120,26 @@ if Meteor.isServer
       Logger.info('Created email', email)
       email
 
-    sendEmail: (email) -> Email.send(@createEmail(email))
+    sendEmail: (email) ->
+      email = @createEmail(email)
+      @_trySendEmail(email, 3)
+
+    _trySendEmail: (email, triesLeft) ->
+      return unless triesLeft > 0
+      try
+        @_sendEmail(email)
+      catch err
+        Logger.error('Error sending email', err, email)
+        triesLeft--
+        if triesLeft > 0
+          Logger.info 'Retrying email -', triesLeft, Strings.pluralize('try', triesLeft, 'tries'),
+              'left...'
+          _.delay(
+            => @_trySendEmail(email, triesLeft)
+            2000
+          )
+
+    _sendEmail: (email) -> Email.send(email)
 
     sendEmailToAdmin: (email) ->
       config = AccountsUi.config()
