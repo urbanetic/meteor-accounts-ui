@@ -22,7 +22,7 @@ _.extend Form,
       err = 'Must provide both username and password'
       Logger.error(err, {notify: false})
       @addMessage @createErrorMessage(err)
-      return
+      return false
     Logger.debug('Logging in with username:', username)
     $submit.addClass('disabled')
     Q.when(@login(username, password, template)).fin(

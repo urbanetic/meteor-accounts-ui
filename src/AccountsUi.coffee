@@ -38,7 +38,14 @@ AccountsUi =
       email:
         fromAddress: null
         adminAddress: null
-      # passwordSignupFields: 'USERNAME_AND_EMAIL'
+        templates:
+          activation:
+            subject: 'Account Activation'
+            html: (args) -> '<p>Your user account has been activated. Please log in with ' +
+              'the link below:</p><a href="' + args.loginUrl + '">' + args.loginUrl + '</a>'
+          # Uses the default in Meteor.
+          verifyEmail: {}
+
       setUpRoutes: ->
         config = @config()
         createRoute 'login', config.login
@@ -67,6 +74,7 @@ AccountsUi =
     unless @_config.email.fromAddress
       throw new Error('AccountsUi: From email address not provided')
     setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
+    @setUpTemplates() if Meteor.isServer
     @_config
 
   signInRequired: (router, args) ->
@@ -114,9 +122,8 @@ if Meteor.isServer
   _.extend AccountsUi,
     createEmail: (email) ->
       config = AccountsUi.config()
-      email = _.extend({
+      email = Setter.defaults email,
         from: config.email.fromAddress
-      }, email)
       Logger.info('Created email', email)
       email
 
@@ -143,9 +150,8 @@ if Meteor.isServer
 
     sendEmailToAdmin: (email) ->
       config = AccountsUi.config()
-      email = _.extend({
+      email = Setter.defaults email,
         to: config.email.adminAddress
-      }, email)
       @sendEmail(email)
 
     sendEmailToUser: (args) ->
@@ -161,7 +167,10 @@ if Meteor.isServer
       unless emailAddress
         Logger.warn('Could not send email to user - no email address', selector, email)
         return
-      email = _.extend({
+      email = Setter.defaults email,
         to: emailAddress
-      }, email)
       @sendEmail(email)
+
+    setUpTemplates: ->
+      config = @config()
+      _.extend Accounts.emailTemplates.verifyEmail, config.email.templates.verifyEmail

@@ -49,6 +49,8 @@ Meteor.methods
       throw new Meteor.Error(500, 'User already exists.')
     else if !isAdmin && existingUser? && existingUser._id != @userId
       throw new Meteor.Error(403, 'Not authorized to update other users.')
+    unless existingUser
+      modifier['profile.signUp.date'] = new Date()
     Meteor.users.upsert selector, $set: modifier
     user = Meteor.users.findOne(selector)
     email = user.emails?[0]
@@ -83,7 +85,7 @@ Meteor.methods
           # TOOD(aramk) Not handled - set a password for now
           throw new Meteor.Error(500, 'User must have a password set - AccountsUi cannot handle ' +
               'enrollment yet.')
-          # Accounts.sendEnrollmentEmail(user._id)
+      
       Logger.info('Sent sign-up email to new user')
     
     if existingUser? && existingUser.enabled != enabled
@@ -92,13 +94,21 @@ Meteor.methods
       AccountsUi.sendEmailToAdmin
         subject: 'User ' + Strings.toTitleCase(action)
         html: '<p>User has been ' + action + '</p>' + userTable
-      if enabled && email?
-        loginUrl = 'http://' + Accounts.emailTemplates.siteName + '/' + config.login.path
-        AccountsUi.sendEmailToUser
-          user: user._id
-          subject: 'Account Activation'
-          html: '<p>Your user account has been activated. Please log in with the link below:</p>' +
-              '<a href="' + loginUrl + '">' + loginUrl + '</a>'
+      if enabled && !user.profile.activation?.date?
+        Meteor.users.upsert selector, $set:
+          'profile.activation.date': new Date()
+        user = Meteor.users.findOne(selector)
+        if email?
+          siteUrl = 'http://' + Accounts.emailTemplates.siteName + '/'
+          context =
+            user: user
+            siteUrl: siteUrl
+            loginUrl: siteUrl + config.login.path
+          emailArgs = {user: user._id}
+          _.each config.email.templates.activation, (value, key) ->
+            if Types.isFunction(value) then value = value(context)
+            emailArgs[key] = value
+          AccountsUi.sendEmailToUser(emailArgs)
 
     Logger.info('Upserted user', user._id)
     user._id

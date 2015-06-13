@@ -15,6 +15,8 @@ TemplateClass.helpers
   users: -> Meteor.users.find({username: {$not: 'admin'}})
   settings: ->
     isAdmin = AccountsUtil.isAdmin()
+    dateFormatter = (value, object) ->
+      if value then Spacebars.SafeString Dates.toLong(value) else 'N/A'
     settings =
       fields: [
         {key: 'username', label: 'Username'}
@@ -33,11 +35,21 @@ TemplateClass.helpers
             value.sort()
             value.join(', ')
         }
+        {
+          key: 'profile.signUp.date'
+          label: 'Sign-Up Date'
+          fn: dateFormatter
+        }
+        {
+          key: 'profile.activation.date'
+          label: 'Activation Date'
+          fn: dateFormatter
+        }
       ]
       onDelete: (args) -> _.each args.ids, (id) -> Meteor.call('users/remove', id)
       crudMenu: isAdmin
     if isAdmin
-      settings.fields.push
+      settings.fields.unshift
         key: 'enabled'
         label: 'Enabled'
         fn: (value, object) ->
