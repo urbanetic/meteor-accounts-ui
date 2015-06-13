@@ -45,6 +45,7 @@ AccountsUi =
               'the link below:</p><a href="' + args.loginUrl + '">' + args.loginUrl + '</a>'
           # Uses the default in Meteor.
           verifyEmail: {}
+          resetPassword: {}
 
       setUpRoutes: ->
         config = @config()
@@ -68,14 +69,15 @@ AccountsUi =
           onBeforeAction: -> if Meteor.isAdmin() then @next() else AccountsUi.goToLogin()
 
     Setter.merge(@_config, config)
-    unless config then return @_config
+    clonedConfig = Setter.clone(@_config)
+    unless config then return clonedConfig
     unless @_config.email.adminAddress
       throw new Error('AccountsUi: Admin email address not provided')
     unless @_config.email.fromAddress
       throw new Error('AccountsUi: From email address not provided')
     setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
     @setUpTemplates() if Meteor.isServer
-    @_config
+    clonedConfig
 
   signInRequired: (router, args) ->
     args = Setter.merge({
@@ -172,5 +174,7 @@ if Meteor.isServer
       @sendEmail(email)
 
     setUpTemplates: ->
+      # Merges any email template overrides into the Meteor config.
       config = @config()
-      _.extend Accounts.emailTemplates.verifyEmail, config.email.templates.verifyEmail
+      _.each ['resetPassword', 'enrollAccount', 'verifyEmail'], (prop) ->
+        _.extend Accounts.emailTemplates[prop], config.email.templates[prop]
