@@ -86,7 +86,7 @@ Meteor.methods
           throw new Meteor.Error(500, 'User must have a password set - AccountsUi cannot handle ' +
               'enrollment yet.')
       
-      Logger.info('Sent sign-up email to new user')
+        Logger.info('Sent sign-up email to new user')
     
     if existingUser? && existingUser.enabled != enabled
       action = if enabled then 'enabled' else 'disabled'
