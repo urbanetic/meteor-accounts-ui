@@ -19,7 +19,7 @@ TemplateClass.helpers
       if value then Spacebars.SafeString Dates.toLong(value) else 'N/A'
     settings =
       fields: [
-        {key: 'username', label: 'Username'}
+        {key: 'username', label: 'Username', sort: 'ascending'}
         {key: 'profile.name', label: 'Name'}
         {
           key: 'emails'

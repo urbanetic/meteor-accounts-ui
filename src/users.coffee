@@ -100,13 +100,14 @@ Meteor.methods
         user = Meteor.users.findOne(selector)
         if email?
           siteUrl = 'http://' + Accounts.emailTemplates.siteName + '/'
-          context =
+          templateArgs =
             user: user
             siteUrl: siteUrl
             loginUrl: siteUrl + config.login.path
           emailArgs = {user: user._id}
-          _.each config.email.templates.activation, (value, key) ->
-            if Types.isFunction(value) then value = value(context)
+          emailConfig = config.email.templates.activation
+          _.each emailConfig, (value, key) ->
+            if Types.isFunction(value) then value = value.call(emailConfig, templateArgs)
             emailArgs[key] = value
           AccountsUi.sendEmailToUser(emailArgs)
 
