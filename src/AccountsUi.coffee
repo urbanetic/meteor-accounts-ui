@@ -71,10 +71,6 @@ AccountsUi =
     Setter.merge(@_config, config)
     clonedConfig = Setter.clone(@_config)
     unless config then return clonedConfig
-    unless @_config.email.adminAddress
-      throw new Error('AccountsUi: Admin email address not provided')
-    unless @_config.email.fromAddress
-      throw new Error('AccountsUi: From email address not provided')
     setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
     @setUpTemplates() if Meteor.isServer
     clonedConfig
@@ -105,6 +101,14 @@ AccountsUi =
     currentRoute = Router.getCurrentName()
     _.indexOf(ROUTE_NAMES, currentRoute) >= 0
 
+  getAdminController: _.once ->
+    Routes.getBaseController().extend
+      onBeforeAction: ->
+        return unless @ready()
+        AccountsUi.signInRequired(@, {callNext: false})
+        user = Meteor.user()
+        if AccountsUtil.isAdmin(user) then @next() else AccountsUi.goToLogin()
+
 ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp', 'verifyEmail']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
 createRoute = (name, args) -> Router.route name,
@@ -124,8 +128,11 @@ if Meteor.isServer
   _.extend AccountsUi,
     createEmail: (email) ->
       config = AccountsUi.config()
+      fromAddress = config.email.fromAddress
+      unless fromAddress
+        throw new Error('AccountsUi: "from" email address not provided')
       email = Setter.defaults email,
-        from: config.email.fromAddress
+        from: fromAddress
       Logger.info('Created email', email)
       email
 
@@ -152,8 +159,11 @@ if Meteor.isServer
 
     sendEmailToAdmin: (email) ->
       config = AccountsUi.config()
+      adminAddress = config.email.adminAddress
+      unless adminAddress
+        throw new Error('AccountsUi: Admin email address not provided')
       email = Setter.defaults email,
-        to: config.email.adminAddress
+        to: adminAddress
       @sendEmail(email)
 
     sendEmailToUser: (args) ->
