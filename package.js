@@ -13,6 +13,7 @@ Package.on_use(function(api) {
     'email',
     'http',
     'underscore',
+    'tracker',
     'aldeed:collection2@2.3.2',
     'aldeed:simple-schema@1.3.0',
     'aramk:checkbox@0.1.0',
@@ -20,7 +21,8 @@ Package.on_use(function(api) {
     'aramk:q@1.0.1_1',
     'digilord:roles@1.2.12',
     'matb33:collection-hooks@0.7.6',
-    'reactive-var@1.0.5'
+    'reactive-var@1.0.5',
+    'aramk:routes@0.2.0'
   ], ['client', 'server']);
   api.use([
     'templating',
@@ -32,9 +34,6 @@ Package.on_use(function(api) {
   api.use([
     'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
-  api.use([
-    'aramk:routes@0.2.0'
-  ], ['client', 'server'], {weak: true});
   api.imply(['accounts-password', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',

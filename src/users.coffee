@@ -121,8 +121,9 @@ Meteor.methods
 
 Accounts.validateLoginAttempt (attempt) ->
   return false unless attempt.allowed
-  config = AccountsUi.config()
   user = attempt.user
-  if config.signUp.requireApproval && user.enabled != true && !AccountsUtil.isAdmin(user)
+  config = AccountsUi.config()
+  signUp = config.signUp
+  if signUp.enabled && signUp.requireApproval && user.enabled != true && !AccountsUtil.isAdmin(user)
     throw new Meteor.Error(403, config.strings.disabledAccount)
   return true

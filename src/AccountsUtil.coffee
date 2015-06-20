@@ -84,6 +84,11 @@ AccountsUtil =
       update: allowOwner
       remove: allowOwner
 
+  createRoles: (roles) ->
+    existingRoles = Roles.getAllRoles().map (role) -> role.name
+    newRoles = _.difference(roles, existingRoles)
+    _.each newRoles, (role) -> Roles.createRole(role)
+
 # Set up role publications.
 
 if Meteor.isServer

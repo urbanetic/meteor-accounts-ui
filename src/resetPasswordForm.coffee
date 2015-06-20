@@ -17,7 +17,7 @@ Form.events
       $submit.removeClass('disabled')
       if err
         config = AccountsUi.config()
-        if config.signUp.requireApproval && err.reason == config.strings.disabledAccount
+        if err.reason == config.strings.disabledAccount
           msg = Form.createMessage(config.strings.resetDisabledAccount, 'blue')
           template.showLoginButton.set(true)
         else
