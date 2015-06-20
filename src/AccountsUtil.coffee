@@ -42,13 +42,13 @@ AccountsUtil =
           throw new Error('No author provided' + suffix)
   
   isOwner: (doc, user) ->
-    user = @_resolveUser(user)
+    user = @resolveUser(user)
     doc[@AUTHOR_FIELD] == user?.username
 
   isOwnerOrAdmin: (doc, user) -> @isOwner(doc, user) || @isAdmin(user)
 
   isAuthorized: (doc, user, predicate) ->
-    user = @_resolveUser(user)
+    user = @resolveUser(user)
     if predicate
       predicate(doc, user)
     else
@@ -59,10 +59,10 @@ AccountsUtil =
       throw new Meteor.Error(403, 'Access denied')
 
   isAdmin: (user) ->
-    user = @_resolveUser(user)
+    user = @resolveUser(user)
     Roles.userIsInRole(user, 'admin')
 
-  _resolveUser: (user) ->
+  resolveUser: (user) ->
     if Types.isString(user)
       user = Meteor.users.findOne(user)
     else
