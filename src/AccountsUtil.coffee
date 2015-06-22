@@ -45,6 +45,8 @@ AccountsUtil =
     user = @resolveUser(user)
     doc[@AUTHOR_FIELD] == user?.username
 
+  hasOwner: (doc) -> doc[@AUTHOR_FIELD]?
+
   isOwnerOrAdmin: (doc, user) -> @isOwner(doc, user) || @isAdmin(user)
 
   isAuthorized: (doc, user, predicate) ->
@@ -75,7 +77,7 @@ AccountsUtil =
       catch e
     user
 
-  allowOwner: (userId, doc) -> @isOwnerOrAdmin(doc, userId)
+  allowOwner: (userId, doc) -> (userId? && !@hasOwner(doc)) || @isOwnerOrAdmin(doc, userId)
 
   setUpCollectionAllow: (collection) ->
     allowOwner = @allowOwner.bind(@)
