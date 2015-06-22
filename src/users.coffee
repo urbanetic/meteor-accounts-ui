@@ -22,11 +22,6 @@ Meteor.methods
     roles = modifier.roles || []
     delete modifier.roles
     roles = _.union(roles, ['user'])
-    enabled = modifier.enabled
-    if enabled? && !isAdmin
-      throw new Meteor.Error(403, 'Only admins can enable/disable users.')
-    enabled ?= !config.signUp.requireApproval || isAdmin
-    modifier.enabled = enabled
 
     selector = {}
     if modifier._id
@@ -51,6 +46,16 @@ Meteor.methods
       throw new Meteor.Error(403, 'Not authorized to update other users.')
     unless existingUser
       modifier['profile.signUp.date'] = new Date()
+
+    enabled = modifier.enabled
+    if enabled? && !isAdmin
+      throw new Meteor.Error(403, 'Only admins can enable/disable users.')
+    unless existingUser
+      # For users without the `enabled` field, enable them if we don't require sign-up approval
+      # or the admin user is creating the new user.
+      enabled ?= config.signUp.requireApproval == false || isAdmin
+      modifier.enabled = enabled
+
     Meteor.users.upsert selector, $set: modifier
     user = Meteor.users.findOne(selector)
     email = user.emails?[0]
@@ -121,8 +126,12 @@ Meteor.methods
 
 Accounts.validateLoginAttempt (attempt) ->
   return false unless attempt.allowed
-  config = AccountsUi.config()
   user = attempt.user
-  if config.signUp.requireApproval && user.enabled != true && !AccountsUtil.isAdmin(user)
+  config = AccountsUi.config()
+  signUp = config.signUp
+  if user.enabled != true && !AccountsUtil.isAdmin(user)
     throw new Meteor.Error(403, config.strings.disabledAccount)
   return true
+
+# Default roles.
+AccountsUtil.createRoles(['admin', 'user'])
