@@ -129,9 +129,12 @@ Accounts.validateLoginAttempt (attempt) ->
   user = attempt.user
   config = AccountsUi.config()
   signUp = config.signUp
-  if user.enabled != true && !AccountsUtil.isAdmin(user)
+  if (config.account.enabledByDefault && user.enabled != false) ||
+      AccountsUtil.isAdmin(user) ||
+      user.enabled == true
+    return true
+  else
     throw new Meteor.Error(403, config.strings.disabledAccount)
-  return true
 
 # Default roles.
 AccountsUtil.createRoles(['admin', 'user'])
