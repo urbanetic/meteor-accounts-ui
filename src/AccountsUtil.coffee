@@ -10,40 +10,38 @@ AccountsUtil =
       name = Collections.getName(collection)
       # Only publish documents belonging to the logged in user.
       Meteor.publish name, ->
-        userId = this.userId
+        userId = @userId
         return unless userId
         user = Meteor.users.findOne(userId)
         username = user.username
-        Logger.info("User '#{username}' subscribed to collection '#{name}'")
+        userStr = "User '#{username}'<#{userId}>"
+        Logger.info("#{userStr} subscribed to collection '#{name}'")
         @onStop ->
-          Logger.info("User '#{username}' unsubscribed from collection '#{name}'")
-        if username == 'admin'
+          Logger.info("#{userStr} unsubscribed from collection '#{name}'")
+        if AccountsUtil.isAdmin(userId)
           # Admin can see all docs.
           collection.find()
         else
           if options.userSelector
             selector = options.userSelector(userId: userId, user: user, username: username)
           else
-            selector = {}
-            selector[AUTHOR_FIELD] = username
+            selector = AccountsUtil._createAuthorSelector(userId, username)
           collection.find(selector)
 
     # Add the logged in user as the author when a doc is created in the collection.
     collection.before.insert (userId, doc) ->
       user = Meteor.users.findOne(userId)
-      author = doc[AUTHOR_FIELD] ?= user?.username
+      author = doc[AUTHOR_FIELD] ?= user?._id
       unless author
         suffix = ' when inserting doc in collection ' + Collections.getName(collection)
         if !user?
           throw new Error('User not provided' + suffix)
-        else if !user.username?
-          throw new Error('No username provided' + suffix)
         else
           throw new Error('No author provided' + suffix)
   
   isOwner: (doc, user) ->
-    user = @resolveUser(user)
-    doc[@AUTHOR_FIELD] == user?.username
+    userId = @resolveUser(user)?._id
+    userId? && @resolveUser(doc[@AUTHOR_FIELD])?._id == userId
 
   hasOwner: (doc) -> doc[@AUTHOR_FIELD]?
 
@@ -66,7 +64,7 @@ AccountsUtil =
 
   resolveUser: (user) ->
     if Types.isString(user)
-      user = Meteor.users.findOne(user)
+      user = Meteor.users.findOne(@_createUserSelector(user, user))
     else
       # If no user is provided, attempt to request the current one. This will fail in publish
       # methods where this.userId should be used instead. If this is undefined since no user is
@@ -76,6 +74,18 @@ AccountsUtil =
         user ?= Meteor.user()
       catch e
     user
+
+  _createAuthorSelector: (userId, username) ->
+    # NOTE: Selector allows both username (legacy) or userId in the author field.
+    usernameSelector = {}
+    usernameSelector[@AUTHOR_FIELD] = username
+    userIdSelector = {}
+    userIdSelector[@AUTHOR_FIELD] = userId
+    {$or: [userIdSelector, usernameSelector]}
+
+  _createUserSelector: (userId, username) ->
+    # NOTE: Selector allows both username (legacy) or userId in the author field.
+    {$or: [{_id: userId}, username: username]}
 
   allowOwner: (userId, doc) -> (userId? && !@hasOwner(doc)) || @isOwnerOrAdmin(doc, userId)
 
