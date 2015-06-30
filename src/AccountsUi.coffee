@@ -21,6 +21,7 @@ AccountsUi =
           @next()
       signUp:
         enabled: false
+        # Whether users are initially disabled and require admin approval after sign-up.
         requireApproval: true
         path: 'sign-up'
         template: 'signUpForm'
@@ -46,6 +47,9 @@ AccountsUi =
           # Uses the default in Meteor.
           verifyEmail: {}
           resetPassword: {}
+      account:
+        # Whether users (existing and future) are enabled unless explicitly disabled.
+        enabledByDefault: false
 
       setUpRoutes: ->
         config = @config()
@@ -57,10 +61,12 @@ AccountsUi =
           createRoute 'signUp', config.signUp
           createRoute 'verifyEmail', config.verify
 
-        Tracker.autorun ->
+        @_loginHandle = Tracker.autorun =>
+          config = @config()
           user = Meteor.user()
           currentRoute = Router.getCurrentName()
           if currentRoute == 'login' && user then config.login.onSuccess?()
+
         Routes.crudRoute Meteor.users,
           data:
             settings:
