@@ -4,9 +4,10 @@ AccountsUtil =
 
   addCollectionAuthorization: (collection, options) ->
     options = _.extend({
+      publish: true
     }, options)
     AUTHOR_FIELD = @AUTHOR_FIELD
-    if Meteor.isServer
+    if Meteor.isServer && options.publish
       name = Collections.getName(collection)
       # Only publish documents belonging to the logged in user.
       Meteor.publish name, ->
