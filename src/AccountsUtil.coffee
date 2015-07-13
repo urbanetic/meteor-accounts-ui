@@ -6,6 +6,7 @@ AccountsUtil =
     options = _.extend({
       publish: true
     }, options)
+
     AUTHOR_FIELD = @AUTHOR_FIELD
     if Meteor.isServer && options.publish
       name = Collections.getName(collection)
@@ -19,7 +20,9 @@ AccountsUtil =
         Logger.info("#{userStr} subscribed to collection '#{name}'")
         @onStop ->
           Logger.info("#{userStr} unsubscribed from collection '#{name}'")
+        
         if AccountsUtil.isAdmin(userId)
+          selector = {}
           # Admin can see all docs.
           collection.find()
         else
@@ -27,7 +30,10 @@ AccountsUtil =
             selector = options.userSelector(userId: userId, user: user, username: username)
           else
             selector = AccountsUtil._createAuthorSelector(userId, username)
-          collection.find(selector)
+
+        args = _.toArray(arguments)
+        options.beforePublish?.call(@, args, selector)
+        collection.find(selector)
 
     # Add the logged in user as the author when a doc is created in the collection.
     collection.before.insert (userId, doc) ->
