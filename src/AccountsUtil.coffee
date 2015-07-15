@@ -63,11 +63,15 @@ AccountsUtil =
     if predicate
       predicate(doc, user)
     else
-      isOwnerOrAdmin(user)
+      @isOwnerOrAdmin(doc, user)
 
   authorize: (doc, user, predicate) ->
     unless @isAuthorized(doc, user, predicate)
       throw new Meteor.Error(403, 'Access denied')
+
+  authorizeUser: (user, predicate) ->
+    predicate ?= (user) -> user?
+    unless predicate(@resolveUser(user)) then throw new Meteor.Error(403, 'Access denied')
 
   isAdmin: (user) ->
     user = @resolveUser(user)
