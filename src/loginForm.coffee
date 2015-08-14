@@ -4,8 +4,12 @@ Form.rendered = -> Form.getUsernameInput(@).focus()
 
 eventsMap =
   'submit form': (e, template) -> Form.onSubmit(e, template)
-  'click .forgot.button': -> AccountsUi.goToForgot()
-  'click .sign-up.button': -> AccountsUi.goToSignUp()
+  'click .forgot.button': ->
+    Logger.track 'accounts/forgot'
+    AccountsUi.goToForgot()
+  'click .sign-up.button': ->
+    Logger.track 'accounts/signup'
+    AccountsUi.goToSignUp()
 _.extend Form.eventsMap, eventsMap
 Form.events(eventsMap)
 
@@ -34,7 +38,8 @@ _.extend Form,
     df = Q.defer()
     Meteor.loginWithPassword username, password, (err) =>
       if err
-        Logger.error('Error when logging in', err, {notify: false})
+        Logger.error 'Error when logging in', err, notify: false
+        Logger.track 'accounts/login/failure', username: username
         @addMessage @createErrorMessage(err), template
         df.reject(err)
       else
