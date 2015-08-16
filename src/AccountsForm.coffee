@@ -11,7 +11,9 @@
       'submit form': (e, template) ->
         e.preventDefault()
         Form.clearMessages()
-      'click .cancel.button': -> AccountsUi.goToLogin()
+      'click .cancel.button': ->
+        Logger.track 'accounts/form/cancel', name: name
+        AccountsUi.goToLogin()
       'click .login.button': -> AccountsUi.goToLogin()
     Form.events(Form.eventsMap)
     

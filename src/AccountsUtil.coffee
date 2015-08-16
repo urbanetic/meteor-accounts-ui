@@ -47,10 +47,14 @@ AccountsUtil =
           throw new Error('No author provided' + suffix)
   
   isOwner: (doc, user) ->
+    return false unless doc
     userId = @resolveUser(user)?._id
-    userId? && @resolveUser(doc[@AUTHOR_FIELD])?._id == userId
+    authorId = doc[@AUTHOR_FIELD]
+    userId? && authorId? && @resolveUser(authorId)?._id == userId
 
   hasOwner: (doc) -> doc[@AUTHOR_FIELD]?
+
+  getOwner: (doc) -> @resolveUser(doc[@AUTHOR_FIELD])
 
   isOwnerOrAdmin: (doc, user) -> @isOwner(doc, user) || @isAdmin(user)
 
