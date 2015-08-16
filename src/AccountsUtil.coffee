@@ -37,7 +37,7 @@ AccountsUtil =
 
     # Add the logged in user as the author when a doc is created in the collection.
     collection.before.insert (userId, doc) ->
-      user = Meteor.users.findOne(userId)
+      user = Meteor.users.findOne(_id: userId)
       author = doc[AUTHOR_FIELD] ?= user?._id
       unless author
         suffix = ' when inserting doc in collection ' + Collections.getName(collection)
