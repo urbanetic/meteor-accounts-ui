@@ -12,7 +12,7 @@
         e.preventDefault()
         Form.clearMessages()
       'click .cancel.button': ->
-        Logger.track 'accounts/form/cancel', name: name
+        Logger.track 'Accounts form cancel', name: name
         AccountsUi.goToLogin()
       'click .login.button': -> AccountsUi.goToLogin()
     Form.events(Form.eventsMap)

@@ -16,10 +16,10 @@ Form.events
       $submit.removeClass('disabled')
       template.isSuccess.set(!err)
       if err
-        Logger.track 'accounts/forgot/failure', error: err.toString()
+        Logger.track 'Accounts forgot failure', error: err.toString()
         msg = Form.createErrorMessage(err)
       else
-        Logger.track 'accounts/forgot/success', email: email
+        Logger.track 'Accounts forgot success', email: email
         msg = Form.createMessage('An email has been sent.', 'green')
       Form.addMessage(msg, template)
 

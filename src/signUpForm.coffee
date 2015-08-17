@@ -6,12 +6,12 @@ Form.created = ->
 Form.helpers
   settings: ->
     onSuccess: ->
-      Logger.track 'accounts/signup/success'
+      Logger.track 'Accounts signup success'
       template = Form.getTemplate(@template)
       template.isSuccess.set(true)
       onFinish(template)
     onError: (operation, err) ->
-      Logger.track 'accounts/signup/failure', error: err.toString()
+      Logger.track 'Accounts signup failure', error: err.toString()
       template = Form.getTemplate(@template)
       template.isSuccess.set(false)
       msg = Form.createErrorMessage(err)
