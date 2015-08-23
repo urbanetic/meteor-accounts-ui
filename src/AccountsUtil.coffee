@@ -102,7 +102,10 @@ AccountsUtil =
     # NOTE: Selector allows both username (legacy) or userId in the author field.
     {$or: [{_id: userId}, username: username]}
 
-  allowOwner: (userId, doc) -> (userId? && !@hasOwner(doc)) || @isOwnerOrAdmin(doc, userId)
+  createRoles: (roles) ->
+    existingRoles = Roles.getAllRoles().map (role) -> role.name
+    newRoles = _.difference(roles, existingRoles)
+    _.each newRoles, (role) -> Roles.createRole(role)
 
   setUpCollectionAllow: (collection) ->
     allowOwner = @allowOwner.bind(@)
@@ -111,10 +114,13 @@ AccountsUtil =
       update: allowOwner
       remove: allowOwner
 
-  createRoles: (roles) ->
-    existingRoles = Roles.getAllRoles().map (role) -> role.name
-    newRoles = _.difference(roles, existingRoles)
-    _.each newRoles, (role) -> Roles.createRole(role)
+  allowUser: (userId, doc) -> userId?
+  
+  allowOwner: (userId, doc) -> (userId? && !@hasOwner(doc)) || @isOwnerOrAdmin(doc, userId)
+
+  allowRoles: ->
+    roles = _.toArray(arguments)
+    (userId, doc) -> Roles.userIsInRole(userId, roles)
 
 # Set up role publications.
 
