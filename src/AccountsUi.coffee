@@ -107,13 +107,15 @@ AccountsUi =
     currentRoute = Router.getCurrentName()
     _.indexOf(ROUTE_NAMES, currentRoute) >= 0
 
-  getAdminController: _.once ->
-    Routes.getBaseController().extend
+  getAdminController: _.once (args) ->
+    Setter.merge
       onBeforeAction: ->
         return unless @ready()
         AccountsUi.signInRequired(@, {callNext: false})
         user = Meteor.user()
         if AccountsUtil.isAdmin(user) then @next() else AccountsUi.goToLogin()
+    , args
+    Routes.getBaseController().extend(args)
 
 ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp', 'verifyEmail']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
