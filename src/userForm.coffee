@@ -1,7 +1,6 @@
 formName = 'userForm'
 TemplateClass = Template[formName]
 collectionName = 'users'
-collectionTitle = 'Users'
 
 Meteor.startup ->
 

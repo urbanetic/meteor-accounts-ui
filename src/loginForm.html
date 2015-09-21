@@ -10,12 +10,15 @@
       </div>
       <div class="buttons">
         <button class="ui primary button" type="submit">Login</button>
-        <div class="ui extra vertical buttons">
+        <div class="extra vertical buttons">
           {{#if config.forgot.enabled}}
-            <div class="ui forgot button">Forgot Password</div>
+            <button class="ui forgot button">Forgot Password</button>
           {{/if}}
           {{#if config.signUp.enabled}}
-            <div class="ui sign-up button">Sign Up</div>
+            <div class="ui horizontal divider">
+              Or
+            </div>
+            <button class="ui large green sign-up button">Sign Up</button>
           {{/if}}
         </div>
       </div>

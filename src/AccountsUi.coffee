@@ -119,11 +119,11 @@ AccountsUi =
 
 ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp', 'verifyEmail']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
-createRoute = (name, args) -> Router.route name,
-  # NOTE: We mix various properties so it's not safe to pass all arguments into route().
-  path: args.path
-  template: args.template
-  onBeforeAction: args.onBeforeAction
+createRoute = (name, args) ->
+  routerArgs = {}
+  _.each ['path', 'template', 'layoutTemplate', 'controller', 'onBeforeAction'], (property) ->
+    routerArgs[property] = args[property] if args[property]?
+  Router.route name, routerArgs
 
 if Meteor.isServer
   Meteor.startup ->
