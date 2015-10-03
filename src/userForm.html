@@ -1,5 +1,5 @@
 <template name="userForm">
-  <div class="user-form ui error user form segment">
+  <div class="user-form ui error user crud form segment">
     <h1>{{formTitle}}</h1>
     {{#autoForm id=formName doc=doc schema=schema}}
 
@@ -17,7 +17,7 @@
         </div>
       {{/if}}
 
-      <div class="buttons">
+      <div class="crud buttons">
         <button type="button" class="ui red cancel button">Cancel</button>
         <button type="submit" class="ui button submit green">{{submitText}}</button>
       </div>

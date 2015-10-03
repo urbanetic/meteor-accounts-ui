@@ -44,6 +44,7 @@ Meteor.startup ->
   Form = Forms.defineModelForm
     name: formName
     schema: schema
+    collection: Meteor.users
     collectionName: collectionName
 
     onRender: ->
