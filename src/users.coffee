@@ -19,9 +19,9 @@ Meteor.methods
       modifier['profile.name'] = name
     password = modifier.password
     delete modifier.password
-    roles = modifier.roles || []
+    roles = modifier.roles
     delete modifier.roles
-    roles = _.union(roles, ['user'])
+    if roles? then roles = _.union(roles ? [], ['user'])
 
     selector = {}
     if modifier._id
@@ -61,7 +61,7 @@ Meteor.methods
     email = user.emails?[0]
     enabled = user.enabled
     if password? then Accounts.setPassword(user._id, password)
-    Roles.setUserRoles(user._id, roles)
+    Roles.setUserRoles(user._id, roles) if roles?
 
     # Create a user table for use in emails.
     row = (title, content) -> '<tr><th>' + title + '</th><td>' + content + '</td></tr>'

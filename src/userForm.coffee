@@ -44,6 +44,7 @@ Meteor.startup ->
   Form = Forms.defineModelForm
     name: formName
     schema: schema
+    collection: Meteor.users
     collectionName: collectionName
 
     onRender: ->
@@ -54,8 +55,9 @@ Meteor.startup ->
         $password.toggle(Template.checkbox.isChecked(getPasswordCheckbox(@)))
       $passwordCheckbox.trigger('change')
       $buttons = @$('.buttons .button')
-      $buttons.addClass('disabled')
       $roles = @$('.roles.field select')
+      return unless $roles.length > 0
+      $buttons.addClass('disabled')
       doc = @data.doc
       getRoles (roles) =>
         $buttons.removeClass('disabled')
@@ -70,8 +72,8 @@ Meteor.startup ->
       modifier =
         username: insertDoc.username
         name: insertDoc.profile.name
-        roles: insertDoc.roles
         enabled: insertDoc.enabled
+      modifier.roles = insertDoc.roles if insertDoc.roles?
       options =
         allowUpdate: settings.allowUpdate ? currentDoc?
       if currentDoc

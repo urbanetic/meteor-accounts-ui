@@ -108,7 +108,7 @@ AccountsUi =
     _.indexOf(ROUTE_NAMES, currentRoute) >= 0
 
   getAdminController: _.once (args) ->
-    Setter.merge
+    args = Setter.merge
       onBeforeAction: ->
         return unless @ready()
         AccountsUi.signInRequired(@, {callNext: false})
