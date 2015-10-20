@@ -61,11 +61,19 @@ AccountsUi =
           createRoute 'signUp', config.signUp
           createRoute 'verifyEmail', config.verify
 
+        # TODO(aramk) Use Accounts.onLogin()?
         @_loginHandle = Tracker.autorun =>
           config = @config()
           user = Meteor.user()
           currentRoute = Router.getCurrentName()
-          if currentRoute == 'login' && user then config.login.onSuccess?()
+          if currentRoute == 'login' and user
+            config.login.onSuccess?()
+            # Load requested path before user was redirected to the login form.
+            Tracker.nonreactive ->
+              afterLoginPath = Session.get('afterLoginPath')
+              if afterLoginPath
+                Router.go(afterLoginPath)
+                Session.set('afterLoginPath', null)
 
         Routes.crudRoute Meteor.users,
           data:
@@ -86,8 +94,11 @@ AccountsUi =
       callNext: true
     }, args)
     user = Meteor.user()
-    currentRoute = Router.getCurrentName()
-    @goToLogin() unless user
+    path = Router.getCurrentPath()
+    unless user
+      # Since the login route itself will call this method, avoid successive calls.
+      Session.setDefault('afterLoginPath', path.path)
+      @goToLogin()
     if args.callNext then router.next()
 
   goToLogin: -> Router.go('login')
@@ -187,8 +198,8 @@ if Meteor.isServer
       unless emailAddress
         Logger.warn('Could not send email to user - no email address', selector, email)
         return
-      email = Setter.defaults email,
-        to: emailAddress
+      to = email.to ?= []
+      to.push(emailAddress)
       @sendEmail(email)
 
     setUpTemplates: ->
