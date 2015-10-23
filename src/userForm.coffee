@@ -13,13 +13,11 @@ Meteor.startup ->
   schema = new SimpleSchema
     username:
       type: String
-      max: 20
     password:
       type: String
       optional: true
     'profile.name':
       type: String
-      max: 20
     email:
       type: String
       regEx: SimpleSchema.RegEx.Email
