@@ -10,8 +10,10 @@
       {{> afQuickField name="password" type="password"}}
       {{> afQuickField name="profile.name"}}
       {{> afQuickField name="email" type="email"}}
-      {{#if isAdmin}}
+      {{#if canEnable}}
         {{> afQuickField name="enabled"}}
+      {{/if}}
+      {{#if isAdmin}}
         <div class="roles field">
           {{> afQuickField name="roles" options="allowed"}}
         </div>

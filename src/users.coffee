@@ -50,6 +50,8 @@ Meteor.methods
     enabled = modifier.enabled
     if enabled? && !isAdmin
       throw new Meteor.Error(403, 'Only admins can enable/disable users.')
+    else if existingUser? and AccountsUtil.isAdmin(existingUser) and enabled?
+      throw new Meteor.Error(403, 'Admins cannot be enabled/disabled')
     unless existingUser
       # For users without the `enabled` field, enable them if we don't require sign-up approval
       # or the admin user is creating the new user.
