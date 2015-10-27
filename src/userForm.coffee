@@ -113,4 +113,4 @@ Meteor.startup ->
 
   getTemplate = (template) -> Templates.getNamedInstance(formName, template)
 
-  getSettings = (template) -> getTemplate(template).settings || {}
+  getSettings = (template) -> getTemplate(template).data?.settings || {}
