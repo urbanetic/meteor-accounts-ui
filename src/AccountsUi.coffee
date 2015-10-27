@@ -75,12 +75,13 @@ AccountsUi =
                 Router.go(afterLoginPath)
                 Session.set('afterLoginPath', null)
 
-        Routes.crudRoute Meteor.users,
+        Routes.crudRoute Meteor.users, Setter.merge
           data:
             settings:
               onSuccess: -> Router.goToLastPath() || Router.go('/')
               onCancel: -> Router.goToLastPath() || Router.go('/')
           onBeforeAction: -> if Meteor.isAdmin() then @next() else AccountsUi.goToLogin()
+        , config.usersRoute
 
     Setter.merge(@_config, config)
     clonedConfig = Setter.clone(@_config)
