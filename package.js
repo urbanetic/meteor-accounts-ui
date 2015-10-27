@@ -37,8 +37,7 @@ Package.on_use(function(api) {
   api.imply(['accounts-password', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',
-    'src/AccountsUtil.coffee',
-    'src/publications.coffee'
+    'src/AccountsUtil.coffee'
   ], ['client', 'server']);
   api.addFiles([
     'src/AccountsForm.coffee',

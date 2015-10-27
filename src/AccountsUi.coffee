@@ -50,6 +50,15 @@ AccountsUi =
       account:
         # Whether users (existing and future) are enabled unless explicitly disabled.
         enabledByDefault: false
+      # Whether to publish user documents automatically.
+      publish:
+        enabled: true
+        cursor:
+          # Returns the selector to use when publishing users given the current user ID.
+          getSelector: (userId) -> {}
+          # The options passed to the cursor when publishing users given the current user ID.
+          getOptions: (userId) ->
+            {fields: {profile: 1, emails: 1, roles: 1, username: 1, enabled: 1}}
 
       setUpRoutes: ->
         config = @config()
@@ -88,6 +97,7 @@ AccountsUi =
     unless config then return clonedConfig
     setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
     @setUpTemplates() if Meteor.isServer
+    @setUpPubSub()
     clonedConfig
 
   signInRequired: (router, args) ->
@@ -128,6 +138,19 @@ AccountsUi =
         if AccountsUtil.isAdmin(user) then @next() else AccountsUi.goToLogin()
     , args
     Routes.getBaseController().extend(args)
+
+  setUpPubSub: ->
+    config = @config()
+    return unless config.publish.enabled
+    if Meteor.isServer
+      Meteor.publish 'userData', ->
+        return [] unless @userId
+        selector = config.publish.cursor.getSelector(@userId)
+        options = config.publish.cursor.getOptions(@userId)
+        Meteor.users.find(selector, options)
+    else if Meteor.isClient
+      Meteor.subscribe('userData')
+
 
 ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp', 'verifyEmail']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
