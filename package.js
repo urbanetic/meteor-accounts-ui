@@ -19,10 +19,10 @@ Package.on_use(function(api) {
     'aramk:checkbox@0.1.0',
     'aramk:q@1.0.1_1',
     'aramk:utility@0.9.0',
+    'aramk:routes@0.2.2',
     'digilord:roles@1.2.12',
     'matb33:collection-hooks@0.7.6',
-    'reactive-var@1.0.5',
-    'aramk:routes@0.2.0'
+    'reactive-var@1.0.5'
   ], ['client', 'server']);
   api.use([
     'templating',
