@@ -61,6 +61,7 @@ AccountsUi =
             {fields: {profile: 1, emails: 1, roles: 1, username: 1, enabled: 1}}
 
       setUpRoutes: ->
+        return unless Routes?.isConfigured()
         config = @config()
         createRoute 'login', config.login
         if config.forgot.enabled == true
