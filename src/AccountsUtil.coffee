@@ -122,6 +122,22 @@ AccountsUtil =
     roles = _.toArray(arguments)
     (userId, doc) -> Roles.userIsInRole(userId, roles)
 
+  # Returns an object with the following, if defined:
+  #  * `name` - The full name of the user.
+  #  * `firstName` - The first name of the user.
+  #  * `lastName` - The last name of the user.
+  getNameParts: (user) ->
+    user = @resolveUser(user)
+    name = user.profile?.name
+    firstName = user.profile?.firstName
+    lastName = user.profile?.lastName
+    if name?
+      parts = name.split(/\s+/g)
+      if parts?
+        firstName ?= _.first(parts)
+        lastName ?= _.last(parts) if parts.length > 1
+    {name: name, firstName: firstName, lastName: lastName}
+
 # Set up role publications.
 
 if Meteor.isServer
