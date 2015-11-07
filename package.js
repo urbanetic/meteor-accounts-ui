@@ -34,7 +34,7 @@ Package.on_use(function(api) {
   api.use([
     'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
-  api.imply(['accounts-password', 'aldeed:autoform']);
+  api.imply(['accounts-password', 'digilord:roles', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',
     'src/AccountsUtil.coffee'
