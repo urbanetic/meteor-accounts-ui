@@ -54,7 +54,10 @@ AccountsUtil =
 
   hasOwner: (doc) -> doc[@AUTHOR_FIELD]?
 
-  getOwner: (doc) -> @resolveUser(doc[@AUTHOR_FIELD])
+  getOwner: (doc) ->
+    userId = doc[@AUTHOR_FIELD]
+    return unless userId?
+    @resolveUser(userId)
 
   isOwnerOrAdmin: (doc, user) -> @isOwner(doc, user) || @isAdmin(user)
 
