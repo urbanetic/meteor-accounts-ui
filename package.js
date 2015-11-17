@@ -2,7 +2,7 @@ Package.describe({
   name: 'urbanetic:accounts-ui',
   summary: 'Simple UI for Meteor Accounts',
   git: 'https://github.com/urbanetic/meteor-accounts-ui.git',
-  version: '0.4.1'
+  version: '0.5.0'
 });
 
 Package.on_use(function(api) {
@@ -13,16 +13,16 @@ Package.on_use(function(api) {
     'email',
     'http',
     'underscore',
-    'tracker',
+    'tracker@1.0.5',
     'aldeed:collection2@2.3.2',
     'aldeed:simple-schema@1.3.0',
     'aramk:checkbox@0.1.0',
     'aramk:q@1.0.1_1',
+    'aramk:routes@0.2.2',
+    'aramk:utility@0.9.0',
     'digilord:roles@1.2.12',
     'matb33:collection-hooks@0.7.6',
-    'reactive-var@1.0.5',
-    'aramk:routes@0.2.1',
-    'urbanetic:utility@1.1.0'
+    'reactive-var@1.0.5'
   ], ['client', 'server']);
   api.use([
     'templating',
@@ -34,11 +34,10 @@ Package.on_use(function(api) {
   api.use([
     'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
-  api.imply(['accounts-password', 'aldeed:autoform']);
+  api.imply(['accounts-password', 'digilord:roles', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',
-    'src/AccountsUtil.coffee',
-    'src/publications.coffee'
+    'src/AccountsUtil.coffee'
   ], ['client', 'server']);
   api.addFiles([
     'src/AccountsForm.coffee',

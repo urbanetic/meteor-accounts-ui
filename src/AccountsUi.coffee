@@ -50,8 +50,18 @@ AccountsUi =
       account:
         # Whether users (existing and future) are enabled unless explicitly disabled.
         enabledByDefault: false
+      # Whether to publish user documents automatically.
+      publish:
+        enabled: true
+        cursor:
+          # Returns the selector to use when publishing users given the current user ID.
+          getSelector: (userId) -> {}
+          # The options passed to the cursor when publishing users given the current user ID.
+          getOptions: (userId) ->
+            {fields: {profile: 1, emails: 1, roles: 1, username: 1, enabled: 1}}
 
       setUpRoutes: ->
+        return unless Routes?.isConfigured()
         config = @config()
         createRoute 'login', config.login
         if config.forgot.enabled == true
@@ -61,24 +71,34 @@ AccountsUi =
           createRoute 'signUp', config.signUp
           createRoute 'verifyEmail', config.verify
 
+        # TODO(aramk) Use Accounts.onLogin()?
         @_loginHandle = Tracker.autorun =>
           config = @config()
           user = Meteor.user()
           currentRoute = Router.getCurrentName()
-          if currentRoute == 'login' && user then config.login.onSuccess?()
+          if currentRoute == 'login' and user
+            config.login.onSuccess?()
+            # Load requested path before user was redirected to the login form.
+            Tracker.nonreactive ->
+              afterLoginPath = Session.get('afterLoginPath')
+              if afterLoginPath
+                Router.go(afterLoginPath)
+                Session.set('afterLoginPath', null)
 
-        Routes.crudRoute Meteor.users,
+        Routes.crudRoute Meteor.users, Setter.merge
           data:
             settings:
               onSuccess: -> Router.goToLastPath() || Router.go('/')
               onCancel: -> Router.goToLastPath() || Router.go('/')
           onBeforeAction: -> if Meteor.isAdmin() then @next() else AccountsUi.goToLogin()
+        , config.usersRoute
 
     Setter.merge(@_config, config)
     clonedConfig = Setter.clone(@_config)
     unless config then return clonedConfig
     setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
     @setUpTemplates() if Meteor.isServer
+    @setUpPubSub()
     clonedConfig
 
   signInRequired: (router, args) ->
@@ -86,8 +106,11 @@ AccountsUi =
       callNext: true
     }, args)
     user = Meteor.user()
-    currentRoute = Router.getCurrentName()
-    @goToLogin() unless user
+    path = Router.getCurrentPath()
+    unless user
+      # Since the login route itself will call this method, avoid successive calls.
+      Session.setDefault('afterLoginPath', path.path)
+      @goToLogin()
     if args.callNext then router.next()
 
   goToLogin: -> Router.go('login')
@@ -116,6 +139,19 @@ AccountsUi =
         if AccountsUtil.isAdmin(user) then @next() else AccountsUi.goToLogin()
     , args
     Routes.getBaseController().extend(args)
+
+  setUpPubSub: ->
+    config = @config()
+    return unless config.publish.enabled
+    if Meteor.isServer
+      Meteor.publish 'userData', ->
+        return [] unless @userId
+        selector = config.publish.cursor.getSelector(@userId)
+        options = config.publish.cursor.getOptions(@userId)
+        Meteor.users.find(selector, options)
+    else if Meteor.isClient
+      Meteor.subscribe('userData')
+
 
 ROUTE_NAMES = ['login', 'forgotPassword', 'resetPassword', 'signUp', 'verifyEmail']
 setUpRoutes = _.once (callback) -> callback.call(AccountsUi)
@@ -187,8 +223,8 @@ if Meteor.isServer
       unless emailAddress
         Logger.warn('Could not send email to user - no email address', selector, email)
         return
-      email = Setter.defaults email,
-        to: emailAddress
+      to = email.to ?= []
+      to.push(emailAddress)
       @sendEmail(email)
 
     setUpTemplates: ->

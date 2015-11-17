@@ -13,13 +13,11 @@ Meteor.startup ->
   schema = new SimpleSchema
     username:
       type: String
-      max: 20
     password:
       type: String
       optional: true
     'profile.name':
       type: String
-      max: 20
     email:
       type: String
       regEx: SimpleSchema.RegEx.Email
@@ -65,6 +63,7 @@ Meteor.startup ->
           $role = $('<option value="' + name + '">' + name + '</option>')
           $roles.append $role
           if doc?.roles && _.contains(doc.roles, name) then $role.prop('selected', true)
+        $roles.trigger('change')
 
     onSubmit: (insertDoc, updateDoc, currentDoc) ->
       settings = getSettings(@template)
@@ -86,6 +85,7 @@ Meteor.startup ->
       shouldChangePassword = !currentDoc || Template.checkbox.isChecked(getPasswordCheckbox())
       if shouldChangePassword
         modifier.password = password
+      settings.beforeSubmit?.call(@, modifier, options)
       # Only allow updates in an update form.
       Meteor.call 'users/upsert', modifier, options, (err, result) =>
         delete modifier.password
@@ -108,6 +108,11 @@ Meteor.startup ->
 
   Form.helpers
     isAdmin: -> AccountsUtil.isAdmin()
+    canEnable: -> AccountsUtil.isAdmin() and !isEditingAdmin()
+
+  isEditingAdmin = (template) ->
+    userId = getTemplate().data?.doc?._id
+    userId? and AccountsUtil.isAdmin(userId)
 
   getPasswordInput = (template) -> getTemplate(template).$('[name="password"]')
 
@@ -115,4 +120,4 @@ Meteor.startup ->
 
   getTemplate = (template) -> Templates.getNamedInstance(formName, template)
 
-  getSettings = (template) -> getTemplate(template).settings || {}
+  getSettings = (template) -> getTemplate(template).data?.settings || {}

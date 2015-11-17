@@ -1,4 +1,5 @@
-TemplateClass = Template.usersTable
+templateName = 'usersTable'
+TemplateClass = Template[templateName]
 
 TemplateClass.events
   'change .enabled input[type="checkbox"]': (e, template) ->
@@ -12,7 +13,7 @@ TemplateClass.events
       if err then Logger.error(err)
 
 TemplateClass.helpers
-  users: -> Meteor.users.find({username: {$not: 'admin'}})
+  users: -> getTemplate().data?.items ? Meteor.users.find({username: {$not: 'admin'}})
   settings: ->
     isAdmin = AccountsUtil.isAdmin()
     dateFormatter = (value, object) ->
@@ -56,3 +57,5 @@ TemplateClass.helpers
           checkedStr = if value then 'checked' else ''
           Spacebars.SafeString('<input type="checkbox" ' + checkedStr + '/>')
     settings
+
+getTemplate = (template) -> Templates.getNamedInstance(templateName, template)
