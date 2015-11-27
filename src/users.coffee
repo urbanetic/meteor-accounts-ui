@@ -69,7 +69,7 @@ Meteor.methods
     # Create a user table for use in emails.
     row = (title, content) -> '<tr><th>' + title + '</th><td>' + content + '</td></tr>'
     userTable =
-      '<table>' + 
+      '<table>' +
       row('ID', user._id) +
       row('Name', user.profile.name) +
       row('Email', email?.address) +
@@ -84,7 +84,7 @@ Meteor.methods
         html: '<p>A new user has signed up:</p>' + userTable
 
       # Send the user a new email to verify their email address.
-      if email? and email.verified != true
+      if email? and config.email.enabled and email.verified != true
         # If no password is set then the enrollment link will create a password for the user.
         # If the password is set, the user only needs to verify their email address.
         if password?
