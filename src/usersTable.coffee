@@ -33,6 +33,7 @@ TemplateClass.helpers
           key: 'roles'
           label: 'Roles'
           fn: (value, object) ->
+            return unless value
             value.sort()
             value.join(', ')
         }

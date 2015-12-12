@@ -19,7 +19,7 @@ Meteor.methods
     delete modifier.password
     roles = modifier.roles
     delete modifier.roles
-    if roles? then roles = _.union(roles ? [], ['user'])
+    roles = _.union(roles ? [], ['user'])
 
     selector = {}
     if modifier._id
