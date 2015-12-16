@@ -54,6 +54,9 @@ AccountsUi =
       # Whether to publish user documents automatically.
       publish:
         enabled: true
+        # A callback which returns a boolean for whether users should be published for the given
+        # user ID.
+        shouldPublish: (userId) -> userId?
         cursor:
           # Returns the selector to use when publishing users given the current user ID.
           getSelector: (userId) -> {}
@@ -146,7 +149,7 @@ AccountsUi =
     return unless config.publish.enabled
     if Meteor.isServer
       Meteor.publish 'userData', ->
-        return [] unless @userId
+        return [] unless config.publish.shouldPublish(@userId)
         selector = config.publish.cursor.getSelector(@userId)
         options = config.publish.cursor.getOptions(@userId)
         Meteor.users.find(selector, options)
