@@ -127,7 +127,8 @@ AccountsUtil =
   #  * `firstName` - The first name of the user.
   #  * `lastName` - The last name of the user.
   getNameParts: (user) ->
-    user = @resolveUser(user)
+    if Types.isString(user)
+      user = @resolveUser(user)
     name = user.profile?.name
     firstName = user.profile?.firstName
     lastName = user.profile?.lastName
