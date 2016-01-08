@@ -19,10 +19,10 @@ Package.on_use(function(api) {
     'aramk:checkbox@0.1.0',
     'aramk:q@1.0.1_1',
     'aramk:routes@0.2.2',
+    'aramk:utility@0.9.0',
     'digilord:roles@1.2.12',
     'matb33:collection-hooks@0.7.6',
     'reactive-var@1.0.5',
-    'urbanetic:utility@1.0.1'
   ], ['client', 'server']);
   api.use([
     'templating',
@@ -34,7 +34,7 @@ Package.on_use(function(api) {
   api.use([
     'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
-  api.imply(['accounts-password', 'aldeed:autoform']);
+  api.imply(['accounts-password', 'digilord:roles', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',
     'src/AccountsUtil.coffee'

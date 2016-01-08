@@ -37,6 +37,7 @@ AccountsUi =
         resetDisabledAccount: 'Password reset. Your account has not yet been activated. ' +
             'Please contact us for assistance.'
       email:
+        enabled: true
         fromAddress: null
         adminAddress: null
         templates:
@@ -53,6 +54,9 @@ AccountsUi =
       # Whether to publish user documents automatically.
       publish:
         enabled: true
+        # A callback which returns a boolean for whether users should be published for the given
+        # user ID.
+        shouldPublish: (userId) -> userId?
         cursor:
           # Returns the selector to use when publishing users given the current user ID.
           getSelector: (userId) -> {}
@@ -145,7 +149,7 @@ AccountsUi =
     return unless config.publish.enabled
     if Meteor.isServer
       Meteor.publish 'userData', ->
-        return [] unless @userId
+        return [] unless config.publish.shouldPublish(@userId)
         selector = config.publish.cursor.getSelector(@userId)
         options = config.publish.cursor.getOptions(@userId)
         Meteor.users.find(selector, options)
@@ -170,6 +174,7 @@ if Meteor.isServer
     Accounts.urls.verifyEmail = (token) -> Meteor.absoluteUrl('verify-email/' + token)
 
   _.extend AccountsUi,
+    
     createEmail: (email) ->
       config = AccountsUi.config()
       fromAddress = config.email.fromAddress
@@ -181,6 +186,8 @@ if Meteor.isServer
       email
 
     sendEmail: (email) ->
+      config = AccountsUi.config()
+      return unless config.email.enabled
       email = @createEmail(email)
       @_trySendEmail(email, 3)
 
@@ -203,6 +210,7 @@ if Meteor.isServer
 
     sendEmailToAdmin: (email) ->
       config = AccountsUi.config()
+      return unless config.email.enabled
       adminAddress = config.email.adminAddress
       unless adminAddress
         throw new Error('AccountsUi: Admin email address not provided')
@@ -215,6 +223,7 @@ if Meteor.isServer
       delete args.user
       email = args
       config = AccountsUi.config()
+      return unless config.email.enabled
       user = Meteor.users.findOne(selector)
       unless user
         Logger.warn('Cannot send email to user - selector found no matches', selector, email)

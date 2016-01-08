@@ -8,8 +8,6 @@ Meteor.methods
     isAdmin = AccountsUtil.isAdmin(@userId)
     config = AccountsUi.config()
     signUpAllowed = config.signUp.enabled
-    unless isAdmin || signUpAllowed
-      throw new Meteor.Error(403, 'SignUp not permitted.')
 
     modifier = Objects.flattenProperties(modifier)
     username = modifier.username
@@ -21,7 +19,7 @@ Meteor.methods
     delete modifier.password
     roles = modifier.roles
     delete modifier.roles
-    if roles? then roles = _.union(roles ? [], ['user'])
+    roles = _.union(roles ? [], ['user'])
 
     selector = {}
     if modifier._id
@@ -40,22 +38,25 @@ Meteor.methods
     @unblock()
 
     existingUser = Meteor.users.findOne(selector)
-    if existingUser? && !options.allowUpdate
+
+    if existingUser? and !options.allowUpdate
       throw new Meteor.Error(500, 'User already exists.')
-    else if !isAdmin && existingUser? && existingUser._id != @userId
+    else if !isAdmin and existingUser? and existingUser._id != @userId
       throw new Meteor.Error(403, 'Not authorized to update other users.')
-    unless existingUser
-      modifier['profile.signUp.date'] = new Date()
+    else if !isAdmin and !existingUser? and !signUpAllowed
+      throw new Meteor.Error(403, 'SignUp not permitted.')
+    
+    unless existingUser then modifier['profile.signUp.date'] = new Date()
 
     enabled = modifier.enabled
-    if enabled? && !isAdmin
+    if enabled? and !isAdmin
       throw new Meteor.Error(403, 'Only admins can enable/disable users.')
     else if existingUser? and AccountsUtil.isAdmin(existingUser) and enabled?
       throw new Meteor.Error(403, 'Admins cannot be enabled/disabled')
     unless existingUser
       # For users without the `enabled` field, enable them if we don't require sign-up approval
       # or the admin user is creating the new user.
-      enabled ?= config.signUp.requireApproval == false || isAdmin
+      enabled ?= config.signUp.requireApproval == false or isAdmin
       modifier.enabled = enabled
 
     Meteor.users.upsert selector, $set: modifier
@@ -68,7 +69,7 @@ Meteor.methods
     # Create a user table for use in emails.
     row = (title, content) -> '<tr><th>' + title + '</th><td>' + content + '</td></tr>'
     userTable =
-      '<table>' + 
+      '<table>' +
       row('ID', user._id) +
       row('Name', user.profile.name) +
       row('Email', email?.address) +
@@ -83,7 +84,7 @@ Meteor.methods
         html: '<p>A new user has signed up:</p>' + userTable
 
       # Send the user a new email to verify their email address.
-      if email? && email.verified != true
+      if email? and config.email.enabled and email.verified != true
         # If no password is set then the enrollment link will create a password for the user.
         # If the password is set, the user only needs to verify their email address.
         if password?
@@ -95,13 +96,13 @@ Meteor.methods
       
         Logger.info('Sent sign-up email to new user')
     
-    if existingUser? && existingUser.enabled != enabled
+    if existingUser? and existingUser.enabled != enabled
       action = if enabled then 'enabled' else 'disabled'
       Logger.info('User ' + action, user._id)
       AccountsUi.sendEmailToAdmin
         subject: 'User ' + Strings.toTitleCase(action)
         html: '<p>User has been ' + action + '</p>' + userTable
-      if enabled && !user.profile.activation?.date?
+      if enabled and !user.profile.activation?.date?
         Meteor.users.upsert selector, $set:
           'profile.activation.date': new Date()
         user = Meteor.users.findOne(selector)
@@ -131,8 +132,8 @@ Accounts.validateLoginAttempt (attempt) ->
   user = attempt.user
   config = AccountsUi.config()
   signUp = config.signUp
-  if (config.account.enabledByDefault && user.enabled != false) ||
-      AccountsUtil.isAdmin(user) ||
+  if (config.account.enabledByDefault and user.enabled != false) or
+      AccountsUtil.isAdmin(user) or
       user.enabled == true
     return true
   else
