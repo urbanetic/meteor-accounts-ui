@@ -16,7 +16,6 @@ Package.on_use(function(api) {
     'tracker@1.0.5',
     'aldeed:collection2@2.3.2',
     'aldeed:simple-schema@1.3.0',
-    'aramk:checkbox@0.1.0',
     'aramk:q@1.0.1_1',
     'aramk:routes@0.2.2',
     'digilord:roles@1.2.12',
@@ -34,6 +33,9 @@ Package.on_use(function(api) {
   api.use([
     'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
+  api.use([
+    'aramk:checkbox@0.1.0'
+  ], ['client', 'server'], {weak: true});
   api.imply(['accounts-password', 'digilord:roles', 'aldeed:autoform']);
   api.addFiles([
     'src/AccountsUi.coffee',
