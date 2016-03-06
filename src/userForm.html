@@ -5,7 +5,9 @@
 
       {{> afQuickField name="username"}}
       {{#if doc}}
-        {{> checkbox name="change-password" label="Change Password"}}
+        {{#if hasCheckbox}}
+          {{> checkbox name="change-password" label="Change Password"}}
+        {{/if}}
       {{/if}}
       {{> afQuickField name="password" type="password"}}
       {{> afQuickField name="profile.name"}}

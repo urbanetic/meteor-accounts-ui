@@ -109,6 +109,7 @@ Meteor.startup ->
   Form.helpers
     isAdmin: -> AccountsUtil.isAdmin()
     canEnable: -> AccountsUtil.isAdmin() and !isEditingAdmin()
+    hasCheckbox: -> Template.checkbox?
 
   isEditingAdmin = (template) ->
     userId = getTemplate().data?.doc?._id
