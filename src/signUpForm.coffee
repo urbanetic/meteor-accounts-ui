@@ -26,11 +26,8 @@ Form.helpers
   isSuccess: -> Form.getTemplate().isSuccess.get()
 
 Form.events
-  'click .submit.button': (e, template) ->
+  'submit form': (e, template) ->
     Form.clearMessages()
-    $form = $('form', getUserForm(template))
-    Form.getSubmitButton(template).addClass('disabled')
-    $form.submit()
 
 getUserForm = (template) -> $('.user-form')
 onFinish = (template) -> Form.getSubmitButton(template).removeClass('disabled')
