@@ -14,6 +14,7 @@ Form.helpers
       Logger.track 'Accounts signup failure', error: err.toString()
       template = Form.getTemplate(@template)
       template.isSuccess.set(false)
+      Form.clearMessages(template)
       msg = Form.createErrorMessage(err)
       Form.addMessage(msg, template)
       onFinish(template)
