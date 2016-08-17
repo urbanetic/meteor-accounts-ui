@@ -8,7 +8,7 @@
         </div>
         <div class="ui login button">Login</div>
       {{else}}
-        {{> userForm settings=settings}}
+        {{> Template.dynamic template=userFormTemplateName data=userFormData}}
       {{/if}}
       <div class="messages"></div>
     </form>

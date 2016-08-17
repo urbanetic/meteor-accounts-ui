@@ -4,11 +4,22 @@ Form.created = ->
   @isSuccess = new ReactiveVar(false)
 
 Form.helpers
-  settings: ->
+  settings: -> getUserFormSettings()
+  userFormData: -> settings: getUserFormSettings()
+  userFormTemplateName: -> getSettings().userFormTemplateName ? 'userForm'
+  isSuccess: -> Form.getTemplate().isSuccess.get()
+
+Form.events
+  'submit form': (e, template) ->
+    Form.clearMessages()
+
+getUserFormSettings = (template) ->
+  settings =
     onSuccess: ->
       Logger.track 'Accounts signup success'
       template = Form.getTemplate(@template)
       template.isSuccess.set(true)
+      Form.clearMessages(template)
       onFinish(template)
     onError: (operation, err) ->
       Logger.track 'Accounts signup failure', error: err.toString()
@@ -23,12 +34,9 @@ Form.helpers
     allowUpdate: false
     # Don't notify with Logger since we're printing error messages in this template.
     loggerNotify: false
-  
-  isSuccess: -> Form.getTemplate().isSuccess.get()
 
-Form.events
-  'submit form': (e, template) ->
-    Form.clearMessages()
+  _.extend settings, getSettings(template)
 
+getSettings = (template) -> Form.getTemplate(template).data?.settings ? {}
 getUserForm = (template) -> $('.user-form')
 onFinish = (template) -> Form.getSubmitButton(template).removeClass('disabled')

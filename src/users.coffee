@@ -56,7 +56,13 @@ Meteor.methods
     unless existingUser
       # For users without the `enabled` field, enable them if we don't require sign-up approval
       # or the admin user is creating the new user.
-      enabled ?= config.signUp.requireApproval == false or isAdmin
+      requireApproval = config.signUp.requireApproval
+      if Types.isFunction(requireApproval)
+        requireApprovalValue = requireApproval.call(this, Setter.clone(modifier),
+            Setter.clone(roles))
+      else
+        requireApprovalValue = requireApproval
+      enabled ?= requireApprovalValue == false or isAdmin
       modifier.enabled = enabled
 
     Meteor.users.upsert selector, $set: modifier
