@@ -72,61 +72,8 @@ Meteor.methods
     if password? then Accounts.setPassword(user._id, password)
     Roles.setUserRoles(user._id, roles) if roles?
 
-    # Create a user table for use in emails.
-    row = (title, content) -> '<tr><th>' + title + '</th><td>' + content + '</td></tr>'
-    userTable =
-      '<table>' +
-      row('ID', user._id) +
-      row('Name', user.profile.name) +
-      row('Email', email?.address) +
-      '</table>'
-    
-    # Send an email for sign-ups.
-    unless existingUser?
-      Logger.info('User sign-up succeeded')
-      # Send the admin an email to notify of new users.
-      AccountsUi.sendEmailToAdmin
-        subject: 'User Sign-Up'
-        html: '<p>A new user has signed up:</p>' + userTable
-
-      # Send the user a new email to verify their email address.
-      if email? and config.email.enabled and email.verified != true
-        # If no password is set then the enrollment link will create a password for the user.
-        # If the password is set, the user only needs to verify their email address.
-        if password?
-          Accounts.sendVerificationEmail(user._id)
-        else
-          # TOOD(aramk) Not handled - set a password for now
-          throw new Meteor.Error(500, 'User must have a password set - AccountsUi cannot handle ' +
-              'enrollment yet.')
-      
-        Logger.info('Sent sign-up email to new user')
-    
-    if existingUser? and existingUser.enabled != enabled
-      action = if enabled then 'enabled' else 'disabled'
-      Logger.info('User ' + action, user._id)
-      AccountsUi.sendEmailToAdmin
-        subject: 'User ' + Strings.toTitleCase(action)
-        html: '<p>User has been ' + action + '</p>' + userTable
-      if enabled and !user.profile.activation?.date?
-        Meteor.users.upsert selector, $set:
-          'profile.activation.date': new Date()
-        user = Meteor.users.findOne(selector)
-        if email?
-          siteUrl = 'http://' + Accounts.emailTemplates.siteName + '/'
-          templateArgs =
-            user: user
-            siteUrl: siteUrl
-            loginUrl: siteUrl + config.login.path
-          emailArgs = {user: user._id}
-          emailConfig = config.email.templates.activation
-          _.each emailConfig, (value, key) ->
-            if Types.isFunction(value) then value = value.call(emailConfig, templateArgs)
-            emailArgs[key] = value
-          AccountsUi.sendEmailToUser(emailArgs)
-
     Logger.info('Upserted user', user._id)
-    user._id
+    return user._id
 
   'users/remove': (id) ->
     unless AccountsUtil.isAdmin(@userId)

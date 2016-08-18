@@ -19,7 +19,7 @@ Package.on_use(function(api) {
     'aramk:q@1.0.1_1',
     'aramk:routes@0.2.2',
     'digilord:roles@1.2.12',
-    'matb33:collection-hooks@0.7.6',
+    'matb33:collection-hooks@0.8.0',
     'reactive-var@1.0.5',
     'urbanetic:utility@1.0.1'
   ], ['client', 'server']);
@@ -62,7 +62,8 @@ Package.on_use(function(api) {
     'src/verifyForm.coffee'
   ], 'client');
   api.addFiles([
-    'src/users.coffee'
+    'src/users.coffee',
+    'src/emails.coffee'
   ], ['server']);
   api.export([
     'AccountsUi',
