@@ -85,9 +85,11 @@ Meteor.startup ->
       shouldChangePassword = !currentDoc || Template.checkbox.isChecked(getPasswordCheckbox())
       if shouldChangePassword
         modifier.password = password
-      settings.beforeSubmit?.call(@, modifier, options)
+      if settings.beforeSubmit?.call(@, modifier, options) == false
+        return false
       # Only allow updates in an update form.
-      Meteor.call 'users/upsert', modifier, options, (err, result) =>
+      methodName = settings.methodName ? 'users/upsert'
+      Meteor.call methodName, modifier, options, (err, result) =>
         delete modifier.password
         if err
           notifyArg = undefined
