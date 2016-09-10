@@ -6,7 +6,7 @@ Package.describe({
 });
 
 Package.on_use(function(api) {
-  api.versionsFrom('METEOR@1.2.0.1');
+  api.versionsFrom('METEOR@1.4.0.1');
   api.use([
     'accounts-password',
     'coffeescript',
@@ -31,7 +31,7 @@ Package.on_use(function(api) {
     'aramk:collection-table@0.4.1'
   ], 'client');
   api.use([
-    'urbanetic:accounts-local@0.1.1'
+    'urbanetic:accounts-local@0.1.4'
   ], 'server', {weak: true});
   api.use([
     'aramk:checkbox@0.1.0'

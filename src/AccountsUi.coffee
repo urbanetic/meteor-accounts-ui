@@ -201,10 +201,7 @@ if Meteor.isServer
         if triesLeft > 0
           Logger.info 'Retrying email -', triesLeft, Strings.pluralize('try', triesLeft, 'tries'),
               'left...'
-          _.delay(
-            => @_trySendEmail(email, triesLeft)
-            2000
-          )
+          _.delay(Meteor.bindEnvironment(=> @_trySendEmail(email, triesLeft)), 2000)
 
     _sendEmail: (email) -> Email.send(email)
 
