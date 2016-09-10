@@ -31,7 +31,7 @@ Package.on_use(function(api) {
     'aramk:collection-table@0.4.1'
   ], 'client');
   api.use([
-    'urbanetic:accounts-local@0.1.4'
+    'urbanetic:accounts-local@0.1.1'
   ], 'server', {weak: true});
   api.use([
     'aramk:checkbox@0.1.0'
