@@ -46,7 +46,7 @@ Meteor.methods
     else if !isAdmin and !existingUser? and !signUpAllowed
       throw new Meteor.Error(403, 'SignUp not permitted.')
     
-    unless existingUser then modifier['profile.signUp.date'] = new Date()
+    unless existingUser then modifier.createdAt = new Date()
 
     enabled = modifier.enabled
     if enabled? and !isAdmin
