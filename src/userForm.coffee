@@ -110,7 +110,7 @@ Meteor.startup ->
         emails = doc.emails
         if emails && emails.length > 0
           doc.email = doc.emails[0].address
-        if doc.profile.name?
+        if doc.profile?.name?
           doc.name = doc.profile.name
         doc
 
