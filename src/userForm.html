@@ -10,7 +10,7 @@
         {{/if}}
       {{/if}}
       {{> afQuickField name="password" type="password"}}
-      {{> afQuickField name="profile.name"}}
+      {{> afQuickField name="name"}}
       {{> afQuickField name="email" type="email"}}
       {{#if canEnable}}
         {{> afQuickField name="enabled"}}
@@ -22,8 +22,8 @@
       {{/if}}
 
       <div class="crud buttons">
-        <button type="button" class="ui red cancel button">Cancel</button>
-        <button type="submit" class="ui button submit green">{{submitText}}</button>
+        <button type="button" class="ui red cancel button">{{_ "Cancel"}}</button>
+        <button type="submit" class="ui button submit green">{{_ submitText}}</button>
       </div>
     {{/autoForm}}
   </div>

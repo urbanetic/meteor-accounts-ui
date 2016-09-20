@@ -1,16 +1,16 @@
 <template name="verifyForm">
   <div class="verify-form accounts-form">
-    <h1>Verify Email Address</h1>
+    <h1>{{_ "Verify Email Address"}}</h1>
     <form class="ui form">
       {{#if isPending}}
-        <div class="ui message">Verifying...</div>
+        <div class="ui message">{{_ "Verifying..."}}</div>
       {{else}}
         {{#if error}}
-          <div class="ui message red">Failed to verify your email address. {{error}}.</div>
+          <div class="ui message red">{{_ "Failed to verify your email address."}} {{error}}.</div>
         {{else}}
-          <div class="ui message green">Successfully verified your email address.</div>
+          <div class="ui message green">{{_ "Successfully verified your email address."}}</div>
         {{/if}}
-        <div class="ui login button">Login</div>
+        <div class="ui login button">{{_ "Login"}}</div>
       {{/if}}
     </form>
   </div>

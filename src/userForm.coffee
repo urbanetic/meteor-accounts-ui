@@ -16,7 +16,7 @@ Meteor.startup ->
     password:
       type: String
       optional: true
-    'profile.name':
+    name:
       type: String
     email:
       type: String
@@ -39,6 +39,9 @@ Meteor.startup ->
       defaultValue: []
       optional: true
 
+  schema.i18n?('schemas.userForm')
+  console.log('schema.i18n', schema.i18n)
+
   Form = Forms.defineModelForm
     name: formName
     schema: schema
@@ -48,9 +51,10 @@ Meteor.startup ->
     onRender: ->
       # Hide password field unless checkbox is checked.
       $passwordCheckbox = getPasswordCheckbox(@)
-      $passwordCheckbox.on 'change', =>
-        $password = getPasswordInput(@).parent()
-        $password.toggle(Template.checkbox.isChecked(getPasswordCheckbox(@)))
+      if Template.checkbox?
+        $passwordCheckbox.on 'change', =>
+          $password = getPasswordInput(@).parent()
+          $password.toggle(Template.checkbox.isChecked(getPasswordCheckbox(@)))
       $passwordCheckbox.trigger('change')
       $buttons = @$('.buttons .button')
       $roles = @$('.roles.field select')
@@ -70,7 +74,7 @@ Meteor.startup ->
       password = insertDoc.password
       modifier =
         username: insertDoc.username
-        name: insertDoc.profile.name
+        name: insertDoc.name
         enabled: insertDoc.enabled
       modifier.roles = insertDoc.roles if insertDoc.roles?
       options =
@@ -82,7 +86,7 @@ Meteor.startup ->
         modifier.emails = [{address: email, verified: false}]
       else
         modifier.emails = []
-      shouldChangePassword = !currentDoc || Template.checkbox.isChecked(getPasswordCheckbox())
+      shouldChangePassword = !currentDoc || Template.checkbox?.isChecked(getPasswordCheckbox())
       if shouldChangePassword
         modifier.password = password
       if settings.beforeSubmit?.call(@, modifier, options) == false
@@ -106,6 +110,8 @@ Meteor.startup ->
         emails = doc.emails
         if emails && emails.length > 0
           doc.email = doc.emails[0].address
+        if doc.profile.name?
+          doc.name = doc.profile.name
         doc
 
   Form.helpers

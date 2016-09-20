@@ -1,12 +1,12 @@
 <template name="signUpForm">
   <div class="sign-up-form accounts-form">
-    <h1>Sign-Up</h1>
+    <h1>{{_ "Sign Up"}}</h1>
     <form class="ui form">
       {{#if isSuccess}}
         <div class="ui message green">
-          Sign-up succeeded. Please check your inbox for instructions.
+          {{_ "Sign-up succeeded. Please check your inbox for instructions."}}
         </div>
-        <div class="ui login button">Login</div>
+        <div class="ui login button">{{_ "Login"}}</div>
       {{else}}
         {{> Template.dynamic template=userFormTemplateName data=userFormData}}
       {{/if}}

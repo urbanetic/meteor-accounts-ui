@@ -9,16 +9,16 @@
         <input type="password" name="password" placeholder="password" />
       </div>
       <div class="buttons">
-        <button class="ui primary button" type="submit">Login</button>
+        <button class="ui primary button" type="submit">{{_ "Login"}}</button>
         <div class="extra vertical buttons">
           {{#if config.forgot.enabled}}
-            <button class="ui forgot button" type="button">Forgot Password</button>
+            <button class="ui forgot button" type="button">{{_ "Forgot Password"}}</button>
           {{/if}}
           {{#if config.signUp.enabled}}
             <div class="ui horizontal divider">
-              Or
+              {{_ "Or"}}
             </div>
-            <button class="ui large green sign-up button" type="button">Sign Up</button>
+            <button class="ui large green sign-up button" type="button">{{_ "Sign Up"}}</button>
           {{/if}}
         </div>
       </div>
