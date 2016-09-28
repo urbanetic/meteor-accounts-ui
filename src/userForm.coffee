@@ -40,7 +40,6 @@ Meteor.startup ->
       optional: true
 
   schema.i18n?('schemas.userForm')
-  console.log('schema.i18n', schema.i18n)
 
   Form = Forms.defineModelForm
     name: formName
