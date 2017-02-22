@@ -76,8 +76,7 @@ Meteor.methods
     return user._id
 
   'users/remove': (id) ->
-    unless AccountsUtil.isAdmin(@userId)
-      throw new Meteor.Error(403, 'Admin privileges required.')
+    AccountsUtil.authorizeAction('removeUser', {userId: id})
     Meteor.users.remove(id)
 
 Accounts.validateLoginAttempt (attempt) ->
