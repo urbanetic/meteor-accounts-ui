@@ -19,7 +19,6 @@ Meteor.methods
     delete modifier.password
     roles = modifier.roles
     delete modifier.roles
-    roles = _.union(roles ? [], ['user'])
 
     selector = {}
     if modifier._id
@@ -38,6 +37,10 @@ Meteor.methods
     @unblock()
 
     existingUser = Meteor.users.findOne(selector)
+
+    # Add a default user role for new users. Don't change the roles for existing users unless necessary.
+    # If roles are provided, ensure the default role is always present.
+    if !existingUser? or roles? then roles = _.union(roles ? [], ['user'])
 
     if existingUser? and !options.allowUpdate
       throw new Meteor.Error(500, 'User already exists.')
