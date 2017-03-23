@@ -2,6 +2,8 @@ AccountsUi =
 
   _config: null
 
+  _reactiveConfig: new ReactiveVar()
+
   config: (config) ->
     @_config ?=
       login:
@@ -98,12 +100,15 @@ AccountsUi =
         , config.usersRoute
 
     Setter.merge(@_config, config)
+    @_reactiveConfig.set(@_config)
     clonedConfig = Setter.clone(@_config)
     unless config then return clonedConfig
     setUpRoutes(@_config.setUpRoutes) if Meteor.isClient
     @setUpTemplates() if Meteor.isServer
     @setUpPubSub()
     clonedConfig
+
+  getReactiveConfig: -> @_reactiveConfig.get()
 
   signInRequired: (router, args) ->
     args = Setter.merge({
