@@ -53,6 +53,8 @@ AccountsUi =
       account:
         # Whether users (existing and future) are enabled unless explicitly disabled.
         enabledByDefault: false
+        # Whether users are always considered enabled (the enabled property is not enforced).
+        alwaysEnabled: false
       # Whether to publish user documents automatically.
       publish:
         enabled: true

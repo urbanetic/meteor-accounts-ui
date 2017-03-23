@@ -87,7 +87,7 @@ Accounts.validateLoginAttempt (attempt) ->
   user = attempt.user
   config = AccountsUi.config()
   signUp = config.signUp
-  if (config.account.enabledByDefault and user.enabled != false) or
+  if config.account.alwaysEnabled or (config.account.enabledByDefault and user.enabled != false) or
       AccountsUtil.isAdmin(user) or
       user.enabled == true
     return true
