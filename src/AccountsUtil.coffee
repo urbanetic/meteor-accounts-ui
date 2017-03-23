@@ -76,6 +76,13 @@ AccountsUtil =
     predicate ?= (user) -> user?
     unless predicate(@resolveUser(user)) then throw new Meteor.Error(403, 'Access denied')
 
+  # Should throw an exception if the given action should not be permitted by the current user.
+  authorizeAction: (action, args) ->
+    user = AccountsUtil.resolveUser()
+    # By default, only admins can modify users.
+    if action == 'removeUser' and !AccountsUtil.isAdmin(user)
+      throw new Meteor.Error(403, 'Admin privileges required.')
+
   isAdmin: (user) ->
     user = @resolveUser(user)
     Roles.userIsInRole(user, 'admin')
