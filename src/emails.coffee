@@ -12,7 +12,7 @@ Meteor.users.after.insert (userId, doc) ->
   config = AccountsUi.config()
   return unless config.email.enabled
   # Wait for the roles to be added in users.coffee
-  Meteor.setTimeout (->
+  Meteor.startup(-> (Meteor.setTimeout (->
     user = Meteor.users.findOne(_id: doc._id)
     userTable = createUserTable(user)
     # Send the admin an email to notify of new users.
@@ -22,7 +22,7 @@ Meteor.users.after.insert (userId, doc) ->
     # Send the user a new email to verify their email address.
     email = user.emails?[0]
     if email? and email.verified != true then Accounts.sendVerificationEmail(user._id)
-  ), 1000
+  ), 1000))
 
 Meteor.users.after.update (userId, user) ->
   config = AccountsUi.config()
