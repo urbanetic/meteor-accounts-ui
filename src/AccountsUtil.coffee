@@ -130,7 +130,7 @@ AccountsUtil =
 
   allowRoles: ->
     roles = _.toArray(arguments)
-    (userId, doc) -> Roles.userIsInRole(userId, roles) || @isAdmin(userId)
+    (userId, doc) => Roles.userIsInRole(userId, roles) || @isAdmin(userId)
 
   # Returns an object with the following, if defined:
   #  * `name` - The full name of the user.
