@@ -45,7 +45,7 @@ Meteor.methods
     if existingUser? and !options.allowUpdate
       throw new Meteor.Error(500, 'User already exists.')
     else if !isAdmin and existingUser? and existingUser._id != @userId
-      throw new Meteor.Error(403, 'Not authorized to update other users.')
+      AccountsUtil.authorizeAction('updateUser', {userId: existingUser._id})
     else if !isAdmin and !existingUser? and !signUpAllowed
       throw new Meteor.Error(403, 'SignUp not permitted.')
     

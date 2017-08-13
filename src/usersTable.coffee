@@ -21,7 +21,7 @@ TemplateClass.helpers
     settings =
       fields: [
         {key: 'username', label: 'Username', sort: 'ascending'}
-        {key: 'profile.name', label: 'Name'}
+        {key: 'profile.name', label: 'Name', sort: 'ascending'}
         {
           key: 'emails'
           label: 'Email'
@@ -48,8 +48,13 @@ TemplateClass.helpers
           fn: dateFormatter
         }
       ]
-      onDelete: (args) -> _.each args.ids, (id) -> Meteor.call('users/remove', id)
+      onDelete: (args) -> _.each args.ids, (id) ->
+        Meteor.call 'users/remove', id, (err, result) ->
+          if err then Logger.error(err)
       crudMenu: isAdmin
+    _.extend settings, @settings
+    if @showUsernames == false
+      settings.fields.shift()
     if isAdmin
       settings.fields.unshift
         key: 'enabled'

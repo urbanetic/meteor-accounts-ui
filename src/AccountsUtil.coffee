@@ -82,6 +82,8 @@ AccountsUtil =
     # By default, only admins can modify users.
     if action == 'removeUser' and !AccountsUtil.isAdmin(user)
       throw new Meteor.Error(403, 'Admin privileges required.')
+    else if action == 'updateUser' and !AccountsUtil.isAdmin(user) and args.userId != user._id
+      throw new Meteor.Error(403, 'Not authorized to update other users.')
 
   isAdmin: (user) ->
     user = @resolveUser(user)
