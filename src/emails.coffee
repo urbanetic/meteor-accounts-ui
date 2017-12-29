@@ -10,7 +10,7 @@ createUserTable = (user) ->
 # Send an email for sign-ups.
 Meteor.users.after.insert (userId, doc) ->
   config = AccountsUi.config()
-  return unless config.email.enabled
+  return unless config.email.enabled and config.signUp.email != false
   # Wait for the roles to be added in users.coffee
   Meteor.startup(-> (Meteor.setTimeout (->
     user = Meteor.users.findOne(_id: doc._id)
