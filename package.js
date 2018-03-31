@@ -9,7 +9,7 @@ Package.on_use(function(api) {
   api.versionsFrom('METEOR@1.6.1');
   api.use([
     'accounts-password',
-    'coffeescript',
+    'coffeescript@1.2.3',
     'email',
     'http',
     'underscore',
@@ -24,7 +24,7 @@ Package.on_use(function(api) {
     'urbanetic:utility@2.0.0'
   ], ['client', 'server']);
   api.use([
-    'templating',
+    'templating@1.3.2',
     'jquery',
     'less',
     'aldeed:autoform@5.1.2',
