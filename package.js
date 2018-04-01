@@ -9,7 +9,7 @@ Package.on_use(function(api) {
   api.versionsFrom('METEOR@1.6.1');
   api.use([
     'accounts-password',
-    'coffeescript@1.2.3',
+    'coffeescript',
     'email',
     'http',
     'underscore',
