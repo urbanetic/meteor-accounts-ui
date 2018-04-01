@@ -2,14 +2,14 @@ Package.describe({
   name: 'urbanetic:accounts-ui',
   summary: 'Simple UI for Meteor Accounts',
   git: 'https://github.com/urbanetic/meteor-accounts-ui.git',
-  version: '1.0.0'
+  version: '1.0.0_1'
 });
 
 Package.on_use(function(api) {
   api.versionsFrom('METEOR@1.6.1');
   api.use([
     'accounts-password',
-    'coffeescript',
+    'coffeescript@2.2.1_1',
     'email',
     'http',
     'underscore',
