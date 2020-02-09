@@ -50,6 +50,7 @@ AccountsUi =
           # Uses the default in Meteor.
           verifyEmail: {}
           resetPassword: {}
+          enrollAccount: {}
       account:
         # Whether users (existing and future) are enabled unless explicitly disabled.
         enabledByDefault: false
@@ -177,7 +178,7 @@ if Meteor.isServer
     # Redefine these URLs to be compatible with Iron Router by removing the '#/' prefix.
     Accounts.urls.resetPassword = (token) -> Meteor.absoluteUrl('reset-password/' + token)
     # Enrolling will send a link to verify the email address.
-    Accounts.urls.enrollAccount = (token) -> Meteor.absoluteUrl('enroll-account/' + token)
+    Accounts.urls.enrollAccount = (token) -> Meteor.absoluteUrl('reset-password/' + token)
     Accounts.urls.verifyEmail = (token) -> Meteor.absoluteUrl('verify-email/' + token)
 
   _.extend AccountsUi,
