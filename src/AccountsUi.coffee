@@ -42,6 +42,8 @@ AccountsUi =
         enabled: true
         fromAddress: null
         adminAddress: null
+        emailAdmin: true
+        emailUser: true
         templates:
           activation:
             subject: 'Account Activation'

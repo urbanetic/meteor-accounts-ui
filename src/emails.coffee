@@ -4,7 +4,7 @@ createUserTable = (user) ->
   return '<table>' +
     row('ID', user._id) +
     row('Name', user.profile.name) +
-    row('Email', email?.address) +
+    row('Email', user.emails?[0]?.address) +
     '</table>'
 
 # Send an email for sign-ups.
@@ -26,23 +26,26 @@ Meteor.users.after.insert (userId, doc) ->
 
 Meteor.users.after.update (userId, user) ->
   config = AccountsUi.config()
-  return unless config.email.enabled
-  
+  emailEnabled = config.email.enabled
+
   email = user.emails?[0]
   return unless email?
   
   enabled = user.enabled
   return unless @previous.enabled != enabled
 
-  action = if enabled then 'enabled' else 'disabled'
   Logger.info('User ' + action, user._id)
-  userTable = createUserTable(user)
-  AccountsUi.sendEmailToAdmin
-    subject: 'User ' + Strings.toTitleCase(action)
-    html: '<p>User has been ' + action + '</p>' + userTable
+  if emailEnabled and config.email.emailAdmin
+    action = if enabled then 'enabled' else 'disabled'
+    userTable = createUserTable(user)
+    AccountsUi.sendEmailToAdmin
+      subject: 'User ' + Strings.toTitleCase(action)
+      html: '<p>User has been ' + action + '</p>' + userTable
 
   unless user.profile.activation?.date?
     Meteor.users.upsert user._id, {$set: 'profile.activation.date': new Date()}
+    return unless emailEnabled and config.email.emailUser
+
     user = Meteor.users.findOne(_id: user._id)
     siteUrl = 'http://' + Accounts.emailTemplates.siteName + '/'
     templateArgs =
