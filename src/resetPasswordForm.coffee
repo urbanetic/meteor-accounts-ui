@@ -21,11 +21,15 @@ Form.events
           msg = Form.createMessage(config.strings.resetDisabledAccount, 'blue')
           template.showLoginButton.set(true)
         else
+          forgotConfig = AccountsUi.config().forgot
+          if err.reason == 'Token expired' and forgotConfig.enabled
+            err = "Your token has expired - try resetting your password again <a href=\"/#{forgotConfig.path}\">here</a>.";
           msg = Form.createErrorMessage(err)
       else
         msg = Form.createMessage('Password reset. Now logging in.', 'green')
         setTimeout (-> Router.go('login')), 1000
       Form.addMessage(msg, template)
+  'click a.forgot-password': -> Router.go('forgotPassword')
 
 Form.helpers
   showLoginButton: -> Form.getTemplate().showLoginButton.get()
