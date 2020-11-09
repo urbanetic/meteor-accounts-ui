@@ -4,6 +4,7 @@ Meteor.methods
     options = _.extend({
       # Pass false if only inserts should be possible.
       allowUpdate: true
+      authorize: true
     }, options)
     isAdmin = AccountsUtil.isAdmin(@userId)
     config = AccountsUi.config()
@@ -44,15 +45,15 @@ Meteor.methods
 
     if existingUser? and !options.allowUpdate
       throw new Meteor.Error(500, 'User already exists.')
-    else if !isAdmin and existingUser? and existingUser._id != @userId
+    else if options.authorize and !isAdmin and existingUser? and existingUser._id != @userId
       AccountsUtil.authorizeAction('updateUser', {userId: existingUser._id})
-    else if !isAdmin and !existingUser? and !signUpAllowed
+    else if options.authorize and !isAdmin and !existingUser? and !signUpAllowed
       throw new Meteor.Error(403, 'SignUp not permitted.')
     
     unless existingUser then modifier.createdAt = new Date()
 
     enabled = modifier.enabled
-    if enabled? and !isAdmin
+    if enabled? and options.authorize and !isAdmin
       throw new Meteor.Error(403, 'Only admins can enable/disable users.')
     else if existingUser? and AccountsUtil.isAdmin(existingUser) and enabled?
       throw new Meteor.Error(403, 'Admins cannot be enabled/disabled')
@@ -83,7 +84,7 @@ Meteor.methods
     Meteor.users.remove(id)
 
 Accounts.validateLoginAttempt (attempt) ->
-  return false unless attempt.allowed
+  return false unless attempt.allowed and attempt.user?
   user = attempt.user
   config = AccountsUi.config()
   signUp = config.signUp
