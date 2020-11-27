@@ -31,6 +31,8 @@ Meteor.methods
         $or.push {username: username}
       _.each modifier.emails, (email) ->
         $or.push {'emails.address': email.address}
+      if _.isEmpty($or)
+        throw new Meteor.Error(500, 'User update could not resolve any selector')
       selector = {$or: $or}
     
     Logger.info('Upserting user', selector, modifier, options)

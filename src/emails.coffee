@@ -43,7 +43,7 @@ Meteor.users.after.update (userId, user) ->
       html: '<p>User has been ' + action + '</p>' + userTable
 
   unless user.profile.activation?.date?
-    Meteor.users.upsert user._id, {$set: 'profile.activation.date': new Date()}
+    Meteor.users.upsert {_id: user._id}, {$set: 'profile.activation.date': new Date()}
     return unless emailEnabled and config.email.emailUser
 
     user = Meteor.users.findOne(_id: user._id)

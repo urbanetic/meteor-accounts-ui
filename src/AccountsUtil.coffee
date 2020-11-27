@@ -141,6 +141,8 @@ AccountsUtil =
   getNameParts: (user) ->
     if Types.isString(user)
       user = @resolveUser(user)
+    unless Types.isObject(user)
+      throw new Error('Invalid user object')
     name = user.profile?.name
     firstName = user.profile?.firstName
     lastName = user.profile?.lastName
