@@ -246,5 +246,4 @@ if Meteor.isServer
     setUpTemplates: ->
       # Merges any email template overrides into the Meteor config.
       config = @config()
-      _.each ['resetPassword', 'enrollAccount', 'verifyEmail'], (prop) ->
-        _.extend Accounts.emailTemplates[prop], config.email.templates[prop]
+      Setter.merge Accounts.emailTemplates, config.email.templates
