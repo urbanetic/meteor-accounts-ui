@@ -20,7 +20,7 @@ Form.events
         msg = Form.createErrorMessage(err)
       else
         Logger.track 'Accounts forgot success', email: email
-        msg = Form.createMessage('An email has been sent.', 'green')
+        msg = Form.createMessage('An email has been sent. Please check your spam folder.', 'green')
       Form.addMessage(msg, template)
 
 Form.helpers
