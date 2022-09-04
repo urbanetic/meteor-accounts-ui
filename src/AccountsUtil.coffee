@@ -115,7 +115,7 @@ AccountsUtil =
     {$or: [{_id: userId}, username: username]}
 
   createRoles: (roles) ->
-    existingRoles = Roles.getAllRoles().map (role) -> role.name
+    existingRoles = Roles.getAllRoles().map (role) -> role._id
     newRoles = _.difference(roles, existingRoles)
     _.each newRoles, (role) -> Roles.createRole(role)
 
@@ -157,5 +157,10 @@ AccountsUtil =
 
 if Meteor.isServer
   Meteor.publish 'roles', -> Meteor.roles.find({})
+  Meteor.publish null, ->
+    if @userId
+      return Meteor.roleAssignment.find({ 'user._id': @userId })
+    else
+      @ready()
 else
   Meteor.subscribe('roles')

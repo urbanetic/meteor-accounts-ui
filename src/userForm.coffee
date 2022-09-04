@@ -7,7 +7,8 @@ Meteor.startup ->
   getRoles = (callback) ->
     Meteor.subscribe 'roles', ->
       # Don't show "user" role as an option which is added to all users.
-      roles = Meteor.roles.find({name: {$not: 'user'}}).map (role) -> role.name
+      roles = Meteor.roles.find({_id: {$not: 'user'}}).map (role) -> role._id
+      console.log('>>> roles', roles)
       callback(roles)
 
   schema = new SimpleSchema
